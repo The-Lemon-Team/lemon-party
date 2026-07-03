@@ -192,7 +192,7 @@ export interface Message {
   entries: Entry[];
 }
 
-import type { MessageDocument } from '@inspiration-book/blocks';
+import type { MessageDocument } from '@lemon-party/blocks';
 
 export type { MessageDocument };
 

@@ -1,4 +1,4 @@
-# Inspiration Book
+# Lemon Party
 
 Личный дневник-чат для записей «Узнал», «Вспомнил» и «Сделать» с регистрацией и публичным бордом.
 
@@ -131,7 +131,7 @@ Production-сборка: `cd electron && npm run dist`
 ## Структура
 
 ```
-inspiration-book/
+lemon-party/
 ├── backend/          # NestJS API
 ├── frontend/         # Vue UI
 ├── electron/         # Desktop client

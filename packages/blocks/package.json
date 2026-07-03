@@ -1,5 +1,5 @@
 {
-  "name": "@inspiration-book/blocks",
+  "name": "@lemon-party/blocks",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",
@@ -16,5 +16,8 @@
   },
   "devDependencies": {
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "lemon-party": "file:../.."
   }
 }

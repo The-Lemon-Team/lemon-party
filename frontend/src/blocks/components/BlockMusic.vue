@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import type { MusicDisplay } from '@inspiration-book/blocks';
-import { youtubeThumbnailUrl, youtubeWatchUrl } from '@inspiration-book/blocks';
+import type { MusicDisplay } from '@lemon-party/blocks';
+import { youtubeThumbnailUrl, youtubeWatchUrl } from '@lemon-party/blocks';
 import type { Tag } from '@/types';
 import { tagStyle } from '@/types';
 import { resolveTagColor } from '@/utils/tag-colors';

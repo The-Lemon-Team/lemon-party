@@ -18,11 +18,25 @@ type ChatListItem = {
   chat: Chat;
   title: string;
   subtitle: string;
+  groupLabel: string | null;
   time: string;
   badge: number;
   pinned: boolean;
   canPin: boolean;
 };
+
+const collectionNameById = computed(() => {
+  const map = new Map<string, string>();
+  for (const collection of chats.collections) {
+    map.set(collection.id, collection.name);
+  }
+  return map;
+});
+
+function resolveCollectionName(chat: Chat) {
+  if (!chat.collectionId) return null;
+  return chat.collection?.name ?? collectionNameById.value.get(chat.collectionId) ?? null;
+}
 
 function sortByRecency(a: Chat, b: Chat) {
   const aTs = new Date(a.lastMessageAt ?? a.createdAt ?? 0).getTime();
@@ -53,12 +67,14 @@ const chatItems = computed<ChatListItem[]>(() => {
   }
 
   return all.map((chat) => {
-    const collectionName = chat.collection?.name;
+    const collectionName = resolveCollectionName(chat);
     const isGeneral = chat.kind === 'GENERAL';
     const isChild = Boolean(chat.parentChatId);
     const canPin = !chat.collectionId && !chat.parentChatId;
     const childCount = childCountByParent.get(chat.id) ?? 0;
     const badge = childCount > 0 ? childCount : 0;
+    const groupLabel =
+      isAllChatsFolder.value && collectionName ? collectionName : null;
 
     return {
       chat,
@@ -67,9 +83,8 @@ const chatItems = computed<ChatListItem[]>(() => {
         ? 'личные заметки и черновики'
         : isChild
           ? 'дочерний канал'
-          : collectionName
-            ? collectionName
-            : 'самостоятельный чат',
+          : 'самостоятельный чат',
+      groupLabel,
       time: formatChatTime(chat.lastMessageAt ?? chat.createdAt),
       badge,
       pinned: Boolean(chat.isPinned),
@@ -185,6 +200,7 @@ onMounted(() => {
             </div>
             <div class="tg-chat-row__bottom">
               <p class="tg-chat-row__preview">{{ item.subtitle }}</p>
+              <span v-if="item.groupLabel" class="tg-chat-row__folder">{{ item.groupLabel }}</span>
               <span v-if="item.badge > 0" class="tg-chat-row__badge">{{ item.badge }}</span>
             </div>
           </div>

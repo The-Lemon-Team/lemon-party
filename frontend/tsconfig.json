@@ -17,7 +17,7 @@
     "jsx": "preserve",
     "paths": {
       "@/*": ["./src/*"],
-      "@inspiration-book/blocks": ["../packages/blocks/src/index.ts"]
+      "@lemon-party/blocks": ["../packages/blocks/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]

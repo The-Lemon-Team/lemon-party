@@ -2,7 +2,7 @@ import {
   detectContentTypeIds,
   documentFromStored,
   type ContentTypeId,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import type { Message } from '@/types';
 
 export type { ContentTypeId };

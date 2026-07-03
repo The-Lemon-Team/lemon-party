@@ -1,6 +1,6 @@
 export type ContentTemplateForm = 'youtube' | 'link';
 
-import type { ContentTypeId } from '@inspiration-book/blocks';
+import type { ContentTypeId } from '@lemon-party/blocks';
 
 export type { ContentTypeId };
 

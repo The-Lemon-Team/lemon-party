@@ -2,7 +2,7 @@
 import { inject } from 'vue';
 import { NodeViewWrapper } from '@tiptap/vue-3';
 import type { NodeViewProps } from '@tiptap/vue-3';
-import type { MusicDisplay, ContentTypeId } from '@inspiration-book/blocks';
+import type { MusicDisplay, ContentTypeId } from '@lemon-party/blocks';
 import BlockMusic from '@/blocks/components/BlockMusic.vue';
 import {
   musicBlockEditorKey,

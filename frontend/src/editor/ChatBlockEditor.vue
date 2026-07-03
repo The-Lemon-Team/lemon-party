@@ -11,7 +11,7 @@ import {
   type GalleryImage,
   type MessageDocument,
   type MusicDisplay,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import { createChatEditorExtensions } from './extensions';
 
 const props = defineProps<{

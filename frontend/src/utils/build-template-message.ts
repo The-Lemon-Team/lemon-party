@@ -1,4 +1,4 @@
-import { serializeYoutubeMarker } from '@inspiration-book/blocks';
+import { serializeYoutubeMarker } from '@lemon-party/blocks';
 import type { ContentTemplate } from '@/constants/content-templates';
 
 export interface TemplateFormData {

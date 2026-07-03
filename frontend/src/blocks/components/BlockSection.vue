@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContentBlock } from '@inspiration-book/blocks';
+import type { ContentBlock } from '@lemon-party/blocks';
 import BlockRenderer from './BlockRenderer.vue';
 
 defineProps<{

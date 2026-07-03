@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NodeViewWrapper } from '@tiptap/vue-3';
 import type { NodeViewProps } from '@tiptap/vue-3';
-import type { GalleryImage } from '@inspiration-book/blocks';
+import type { GalleryImage } from '@lemon-party/blocks';
 import BlockGallery from '@/blocks/components/BlockGallery.vue';
 
 const props = defineProps<NodeViewProps>();

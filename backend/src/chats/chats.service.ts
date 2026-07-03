@@ -8,7 +8,7 @@ import {
   detectContentTypeIds,
   documentFromStored,
   type MessageDocument,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateChatCollectionDto } from './dto/create-chat-collection.dto';
 import { CreateChatDto } from './dto/create-chat.dto';

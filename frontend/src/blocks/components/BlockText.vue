@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { TextEntity } from '@inspiration-book/blocks';
-import { splitByEntities } from '@inspiration-book/blocks';
+import type { TextEntity } from '@lemon-party/blocks';
+import { splitByEntities } from '@lemon-party/blocks';
 
 const props = defineProps<{
   text: string;

@@ -1,4 +1,4 @@
-# Lemon Party Desktop
+﻿# Lemon Party Desktop
 
 Electron-клиент с Telegram-подобным сайдбаром.
 

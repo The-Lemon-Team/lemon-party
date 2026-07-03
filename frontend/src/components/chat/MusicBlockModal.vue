@@ -4,7 +4,7 @@ import {
   extractYoutubeVideoId,
   youtubeWatchUrl,
   type MusicDisplay,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import {
   formatTemplateTagLabel,
   type ContentTemplate,

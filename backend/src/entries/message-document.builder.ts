@@ -1,7 +1,7 @@
 import {
   parseRawTextToDocument,
   type MessageDocument,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 
 function isMessageDocument(value: unknown): value is MessageDocument {
   if (!value || typeof value !== 'object') return false;

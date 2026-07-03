@@ -1,4 +1,4 @@
-# @inspiration-book/blocks
+# @lemon-party/blocks
 
 JSON-документ сообщения: блоки и inline-entities в стиле Telegram / Notion.
 

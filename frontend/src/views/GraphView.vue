@@ -22,7 +22,7 @@ type GraphEdge = {
 
 const GRAPH_WIDTH = 840;
 const GRAPH_HEIGHT = 560;
-const POSITIONS_KEY = 'inspiration-book:graph-positions';
+const POSITIONS_KEY = 'lemon-party:graph-positions';
 const DRAG_THRESHOLD = 5;
 
 const chats = useChatsStore();

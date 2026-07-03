@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContentBlock } from '@inspiration-book/blocks';
+import type { ContentBlock } from '@lemon-party/blocks';
 import BlockGallery from './BlockGallery.vue';
 import BlockImage from './BlockImage.vue';
 import BlockLink from './BlockLink.vue';

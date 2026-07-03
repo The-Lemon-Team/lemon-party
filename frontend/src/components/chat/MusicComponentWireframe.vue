@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MusicDisplay } from '@inspiration-book/blocks';
+import type { MusicDisplay } from '@lemon-party/blocks';
 
 const props = defineProps<{
   variant: MusicDisplay;

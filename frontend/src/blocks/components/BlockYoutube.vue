@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { youtubeThumbnailUrl, youtubeWatchUrl } from '@inspiration-book/blocks';
+import { youtubeThumbnailUrl, youtubeWatchUrl } from '@lemon-party/blocks';
 
 const props = defineProps<{
   url: string;

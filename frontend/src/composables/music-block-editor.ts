@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue';
-import type { MusicDisplay, ContentTypeId } from '@inspiration-book/blocks';
+import type { MusicDisplay, ContentTypeId } from '@lemon-party/blocks';
 
 export interface MusicBlockFormPayload {
   url: string;

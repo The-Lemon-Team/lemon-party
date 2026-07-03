@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 import {
   extractYoutubeVideoId,
   youtubeThumbnailUrl,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import type { ContentTemplate } from '@/constants/content-templates';
 import { buildMessageFromTemplate } from '@/utils/build-template-message';
 

@@ -5,7 +5,7 @@ import {
   isDocumentEmpty,
   isMessageDocument,
   parseHashtagList,
-} from '@inspiration-book/blocks';
+} from '@lemon-party/blocks';
 import { TagsService } from '../tags/tags.service';
 
 export interface ParsedEntry {

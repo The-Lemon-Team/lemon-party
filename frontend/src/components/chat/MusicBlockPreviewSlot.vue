@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { MusicDisplay } from '@inspiration-book/blocks';
+import type { MusicDisplay } from '@lemon-party/blocks';
 import BlockMusic from '@/blocks/components/BlockMusic.vue';
 import type { Tag } from '@/types';
 import MusicComponentWireframe from './MusicComponentWireframe.vue';

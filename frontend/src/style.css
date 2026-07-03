@@ -938,6 +938,20 @@ body {
   white-space: nowrap;
 }
 
+.tg-chat-row__folder {
+  max-width: 7.5rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-container));
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .tg-chat-row__badge {
   min-width: 1.4rem;
   height: 1.4rem;

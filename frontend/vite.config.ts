@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@inspiration-book/blocks': fileURLToPath(
+      '@lemon-party/blocks': fileURLToPath(
         new URL('../packages/blocks/src', import.meta.url),
       ),
     },

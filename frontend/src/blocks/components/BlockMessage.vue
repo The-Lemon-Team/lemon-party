@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { documentFromStored, type MessageDocument } from '@inspiration-book/blocks';
+import { documentFromStored, type MessageDocument } from '@lemon-party/blocks';
 import BlockRenderer from './BlockRenderer.vue';
 
 const props = defineProps<{
