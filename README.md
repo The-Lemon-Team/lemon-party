@@ -13,7 +13,7 @@
 
 ### 1. PostgreSQL
 
-PostgreSQL слушает порт **5433** (если 5432 уже занят локальным Postgres).
+PostgreSQL слушает порт **5438** (если 5432 уже занят локальным Postgres).
 
 ```bash
 docker compose up -d
@@ -28,7 +28,7 @@ npx prisma migrate dev
 npm run start:dev
 ```
 
-API: `http://localhost:3000`
+API: `http://localhost:3008`
 
 В `.env` задайте `JWT_SECRET` для production.
 

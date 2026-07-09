@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { useChatFolders } from '@/composables/useChatFolders';
 import { useChatsStore } from '@/stores/chats';
 import type { ChatCollection } from '@/types';
+import BaseModal from '@/components/BaseModal.vue';
 
 const props = defineProps<{ open: boolean }>();
 
@@ -247,14 +248,15 @@ watch(
 </script>
 
 <template>
-  <div v-if="open" class="folders-modal">
-    <div class="folders-modal__backdrop" @click="closeModal" />
-
-    <section
-      class="folders-modal__dialog"
-      role="dialog"
-      :aria-labelledby="view === 'list' ? 'folders-modal-title' : 'folder-form-title'"
-    >
+  <BaseModal
+    :open="open"
+    :teleport="false"
+    modal-class="folders-modal"
+    backdrop-class="folders-modal__backdrop"
+    dialog-class="folders-modal__dialog"
+    :aria-labelledby="view === 'list' ? 'folders-modal-title' : 'folder-form-title'"
+    @close="closeModal"
+  >
       <template v-if="view === 'list'">
         <header class="folders-modal__head">
           <h2 id="folders-modal-title" class="folders-modal__title">Папки</h2>
@@ -421,6 +423,5 @@ watch(
           </button>
         </footer>
       </template>
-    </section>
-  </div>
+  </BaseModal>
 </template>

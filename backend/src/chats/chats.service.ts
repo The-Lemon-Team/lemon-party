@@ -329,6 +329,13 @@ export class ChatsService {
 
     if (nextParentId) {
       await this.syncHierarchyLinks(userId, chatId, nextParentId);
+      await this.prisma.message.create({
+        data: {
+          rawText: `Прикреплен дочерний чат: ${chat.name}`,
+          userId,
+          chatId: nextParentId,
+        },
+      });
     }
 
     return updated;

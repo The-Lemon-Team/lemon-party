@@ -1,4 +1,4 @@
-/** Backend root, e.g. http://localhost:3000 — for Electron production without Vite proxy */
+/** Backend root, e.g. http://localhost:3008 — for Electron production without Vite proxy */
 export function apiUrl(path: string): string {
   const base = import.meta.env.VITE_API_BASE?.replace(/\/$/, '');
   if (!base) return path;

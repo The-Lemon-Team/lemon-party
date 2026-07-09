@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { useChatsStore } from '@/stores/chats';
 import type { Chat } from '@/types';
+import BaseModal from '@/components/BaseModal.vue';
 
 const props = defineProps<{
   open: boolean;
@@ -67,9 +68,15 @@ function chatIcon(chat: Chat) {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div v-if="open" class="forward-modal" @click.self="close">
-      <div class="forward-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="forward-modal-title">
+  <BaseModal
+    :open="open"
+    teleport-to="body"
+    modal-class="forward-modal"
+    dialog-class="forward-modal__dialog"
+    :has-backdrop="false"
+    aria-labelledby="forward-modal-title"
+    @close="close"
+  >
         <header class="forward-modal__head">
           <div>
             <p class="forward-modal__eyebrow">Пересылка</p>
@@ -122,7 +129,5 @@ function chatIcon(chat: Chat) {
             Отправить
           </button>
         </footer>
-      </div>
-    </div>
-  </Teleport>
+  </BaseModal>
 </template>

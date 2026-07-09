@@ -2774,3 +2774,96 @@
   display: grid;
   gap: 1.25rem;
 }
+
+/* --- Hierarchy child list & settings styles --- */
+.channel-settings__select {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  width: 100%;
+}
+
+.channel-settings__select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.channel-settings__children-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0.75rem 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.channel-settings__child-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.65rem;
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-variant);
+  font-size: 0.9rem;
+}
+
+.channel-settings__child-name {
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.channel-settings__child-remove {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-settings__child-remove:hover {
+  background: color-mix(in srgb, #dc2626 10%, transparent);
+}
+
+.channel-settings__child-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Hierarchical Chat List Nesting & Tree Branch Connectors --- */
+.tg-chat-row--child {
+  position: relative;
+  padding-left: 2.2rem !important;
+  border-bottom: none !important;
+}
+
+.tg-chat-row--child-last {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 70%, transparent) !important;
+}
+
+.tg-chat-row--child::before {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: 0;
+  bottom: 50%;
+  width: 0.8rem;
+  border-left: 2px solid var(--color-outline-variant);
+  border-bottom: 2px solid var(--color-outline-variant);
+  border-bottom-left-radius: 4px;
+}
+
+.tg-chat-row--child:not(.tg-chat-row--child-last)::after {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  bottom: 0;
+  border-left: 2px solid var(--color-outline-variant);
+}

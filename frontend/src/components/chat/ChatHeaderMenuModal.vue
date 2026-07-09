@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { chatsApi } from '@/api/chats';
 import { useChatsStore } from '@/stores/chats';
 import type { Chat, ChatContentSummary } from '@/types';
+import BaseModal from '@/components/BaseModal.vue';
 import {
   CONTENT_TYPES,
   type ContentTypeDefinition,
@@ -105,6 +106,8 @@ async function createGroupAndLink() {
   }
 }
 
+
+
 watch(
   () => [props.open, props.chat?.id] as const,
   ([open]) => {
@@ -120,9 +123,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="open && chat" class="chat-header-menu">
-    <div class="chat-header-menu__backdrop" @click="emit('close')" />
-    <section class="chat-header-menu__dialog" role="dialog" aria-labelledby="chat-header-menu-title">
+  <BaseModal
+    :open="open && !!chat"
+    :teleport="false"
+    modal-class="chat-header-menu"
+    backdrop-class="chat-header-menu__backdrop"
+    dialog-class="chat-header-menu__dialog"
+    aria-labelledby="chat-header-menu-title"
+    @close="emit('close')"
+  >
+    <template v-if="chat">
       <header class="chat-header-menu__head">
         <div>
           <p class="chat-header-menu__eyebrow">Инфо чата</p>
@@ -220,6 +230,6 @@ onMounted(() => {
 
         <p v-if="error" class="chat-header-menu__error">{{ error }}</p>
       </div>
-    </section>
-  </div>
+    </template>
+  </BaseModal>
 </template>

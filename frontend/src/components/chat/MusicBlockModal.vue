@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import BaseModal from '@/components/BaseModal.vue';
 import {
   extractYoutubeVideoId,
   youtubeWatchUrl,
@@ -105,27 +106,7 @@ function close() {
   emit('close');
 }
 
-function onEscapeKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Escape') return;
-  event.preventDefault();
-  close();
-}
 
-watch(
-  () => props.open && props.template,
-  (isOpen) => {
-    if (isOpen) {
-      document.addEventListener('keydown', onEscapeKeydown, true);
-    } else {
-      document.removeEventListener('keydown', onEscapeKeydown, true);
-    }
-  },
-  { immediate: true },
-);
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', onEscapeKeydown, true);
-});
 
 function buildPayload(): MusicBlockFormPayload {
   const template = props.template!;
@@ -161,9 +142,15 @@ function submit() {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div v-if="open && template" class="music-modal" @click.self="close">
-      <div class="music-modal__dialog music-modal__dialog--constructor" role="dialog" aria-modal="true">
+  <BaseModal
+    :open="open && !!template"
+    teleport-to="body"
+    modal-class="music-modal"
+    dialog-class="music-modal__dialog music-modal__dialog--constructor"
+    :has-backdrop="false"
+    @close="close"
+  >
+    <template v-if="template">
         <header class="music-modal__head">
           <div>
             <p class="music-modal__eyebrow">
@@ -284,7 +271,6 @@ function submit() {
             {{ isEditMode ? 'Сохранить' : 'Вставить в сообщение' }}
           </button>
         </section>
-      </div>
-    </div>
-  </Teleport>
+    </template>
+  </BaseModal>
 </template>

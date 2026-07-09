@@ -1,4 +1,4 @@
-﻿# Lemon Party Desktop
+# Lemon Party Desktop
 
 Electron-клиент с Telegram-подобным сайдбаром.
 
@@ -15,7 +15,7 @@ npm run desktop
 
 Скрипт поднимает:
 
-1. **backend** — API на `:3000`
+1. **backend** — API на `:3008`
 2. **frontend** — Vite dev server (`dev:desktop`) на `:5173`
 3. **Electron** — окно на `http://localhost:5173/chats/general`
 
@@ -49,7 +49,7 @@ npm run dev:frontend:desktop
 
 ## Production-сборка (.exe)
 
-**Backend запускается отдельно** — в `.env.electron` зашит `VITE_API_BASE=http://localhost:3000`.
+**Backend запускается отдельно** — в `.env.electron` зашит `VITE_API_BASE=http://localhost:3008`.
 
 ```bash
 # 1. Backend должен быть доступен
@@ -68,7 +68,7 @@ npm run dist
 
 ### Почему .exe мог не работать
 
-1. **Backend не запущен** — приложение обращается к `http://localhost:3000`
+1. **Backend не запущен** — приложение обращается к `http://localhost:3008`
 2. **CORS** — упакованное приложение грузится с `file://`; backend должен принимать запросы без `Origin` (исправлено в `backend/src/main.ts`)
 
 ## Переменные
@@ -77,7 +77,7 @@ npm run dist
 |------------|----------|
 | `FRONTEND_URL` | URL dev-сервера для Electron (по умолчанию `http://localhost:5173`) |
 | `VITE_SHELL=desktop` | Включить desktop shell в браузере (`.env.desktop`) |
-| `VITE_API_BASE` | URL backend без `/api` (для electron-сборки, напр. `http://localhost:3000`) |
+| `VITE_API_BASE` | URL backend без `/api` (для electron-сборки, напр. `http://localhost:3008`) |
 
 ## Иконка
 

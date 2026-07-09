@@ -4,6 +4,7 @@ import { chatsApi } from '@/api/chats';
 import { tagsApi } from '@/api/tags';
 import { useChatsStore } from '@/stores/chats';
 import type { Chat, ReplaySchedule, Tag } from '@/types';
+import BaseModal from '@/components/BaseModal.vue';
 
 const props = defineProps<{
   open: boolean;
@@ -28,10 +29,28 @@ const newTime = ref('12:00');
 const newTimezone = ref('Europe/Moscow');
 
 const isGeneral = computed(() => props.chat?.kind === 'GENERAL');
-const parentName = computed(() => props.chat?.parentChat?.name ?? '—');
-const childNames = computed(() =>
-  childChats.value.map((chat) => chat.name).join(', ') || 'нет дочерних чатов',
-);
+
+const selectedParentId = ref('');
+const selectedNewChildId = ref('');
+
+const parentCandidates = computed(() => {
+  if (!props.chat) return [];
+  return chats.allChats.filter(
+    (item) => item.id !== props.chat!.id && item.kind !== 'GENERAL',
+  );
+});
+
+const childCandidates = computed(() => {
+  if (!props.chat) return [];
+  const currentChildIds = new Set(childChats.value.map((c) => c.id));
+  return chats.allChats.filter(
+    (item) =>
+      item.id !== props.chat!.id &&
+      item.kind !== 'GENERAL' &&
+      item.id !== props.chat!.parentChatId &&
+      !currentChildIds.has(item.id),
+  );
+});
 
 async function loadData() {
   if (!props.chat || isGeneral.value) return;
@@ -48,6 +67,7 @@ async function loadData() {
     tags.value = tagList;
     schedules.value = scheduleList;
     childChats.value = children;
+    selectedParentId.value = props.chat.parentChatId ?? '';
 
     if (!newTagId.value && tagList.length > 0) {
       const resumeTag = tagList.find((tag) =>
@@ -62,41 +82,53 @@ async function loadData() {
   }
 }
 
-async function onSetParent() {
+async function changeParent() {
   if (!props.chat) return;
-
-  await chats.load();
-  const candidates = chats.allChats.filter(
-    (item) => item.id !== props.chat!.id && item.kind !== 'GENERAL',
-  );
-
-  if (candidates.length === 0) {
-    window.alert('Нет доступных чатов для родителя');
-    return;
-  }
-
-  const listing = candidates
-    .map((item, index) => `${index + 1}. ${item.name}`)
-    .join('\n');
-  const pick = window.prompt(
-    `Родительский канал для «${props.chat.name}»:\n${listing}\n\nНомер или 0 — отвязать`,
-  );
-  if (pick === null) return;
-
-  const index = Number.parseInt(pick, 10);
-  const parentChatId = index === 0 ? null : candidates[index - 1]?.id;
-  if (index !== 0 && !parentChatId) {
-    window.alert('Неверный номер');
-    return;
-  }
-
   saving.value = true;
+  error.value = '';
   try {
-    await chatsApi.setParent(props.chat.id, parentChatId);
+    const parentId = selectedParentId.value || null;
+    await chatsApi.setParent(props.chat.id, parentId);
     await chats.load(true);
     emit('updated');
   } catch (e) {
-    window.alert(e instanceof Error ? e.message : 'Не удалось привязать');
+    error.value = e instanceof Error ? e.message : 'Не удалось привязать родительский чат';
+    selectedParentId.value = props.chat?.parentChatId ?? '';
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function removeChild(childId: string) {
+  if (!props.chat) return;
+  saving.value = true;
+  error.value = '';
+  try {
+    await chatsApi.setParent(childId, null);
+    const children = await chatsApi.getChildren(props.chat.id);
+    childChats.value = children;
+    await chats.load(true);
+    emit('updated');
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Не удалось отвязать дочерний чат';
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function addChild() {
+  if (!props.chat || !selectedNewChildId.value) return;
+  saving.value = true;
+  error.value = '';
+  try {
+    await chatsApi.setParent(selectedNewChildId.value, props.chat.id);
+    selectedNewChildId.value = '';
+    const children = await chatsApi.getChildren(props.chat.id);
+    childChats.value = children;
+    await chats.load(true);
+    emit('updated');
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Не удалось привязать дочерний чат';
   } finally {
     saving.value = false;
   }
@@ -186,10 +218,15 @@ function formatLastRun(schedule: ReplaySchedule) {
   return 'ещё не запускалось';
 }
 
+
+
 watch(
   () => [props.open, props.chat?.id] as const,
   ([open]) => {
-    if (open) loadData();
+    if (open) {
+      loadData();
+      selectedParentId.value = props.chat?.parentChatId ?? '';
+    }
   },
 );
 
@@ -199,9 +236,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="open && chat" class="channel-settings">
-    <div class="channel-settings__backdrop" @click="emit('close')" />
-    <div class="channel-settings__dialog" role="dialog" aria-labelledby="channel-settings-title">
+  <BaseModal
+    :open="open && !!chat"
+    :teleport="false"
+    modal-class="channel-settings"
+    backdrop-class="channel-settings__backdrop"
+    dialog-class="channel-settings__dialog"
+    aria-labelledby="channel-settings-title"
+    @close="emit('close')"
+  >
+    <template v-if="chat">
       <header class="channel-settings__head">
         <div>
           <p class="channel-settings__eyebrow">Настройки канала</p>
@@ -219,20 +263,71 @@ onMounted(() => {
       <div v-else class="channel-settings__body">
         <section class="channel-settings__section">
           <h3 class="channel-settings__section-title">Иерархия</h3>
-          <p class="caption">
-            Родитель: <strong>{{ parentName }}</strong>
-          </p>
-          <p class="caption">
-            Дочерние чаты: {{ childNames }}
-          </p>
-          <button
-            type="button"
-            class="btn-secondary channel-settings__btn"
-            :disabled="saving || isGeneral"
-            @click="onSetParent"
-          >
-            Изменить родителя
-          </button>
+          
+          <!-- Parent Chat Select -->
+          <div class="channel-settings__field" style="margin-bottom: 1rem;">
+            <span class="channel-settings__label">Родительский чат</span>
+            <select
+              v-model="selectedParentId"
+              class="channel-settings__select"
+              :disabled="saving || isGeneral"
+              @change="changeParent"
+            >
+              <option value="">Не привязан</option>
+              <option v-for="item in parentCandidates" :key="item.id" :value="item.id">
+                {{ item.name }}
+              </option>
+            </select>
+            <span class="caption channel-settings__hint">
+              Канал, куда будут собираться сводки и где этот чат будет дочерним.
+            </span>
+          </div>
+
+          <!-- Child Chats Management -->
+          <div class="channel-settings__children-list-wrapper" style="margin-top: 1rem;">
+            <span class="channel-settings__label">Дочерние чаты</span>
+            
+            <ul v-if="childChats.length > 0" class="channel-settings__children-list">
+              <li v-for="child in childChats" :key="child.id" class="channel-settings__child-item">
+                <span class="channel-settings__child-name">{{ child.name }}</span>
+                <button
+                  type="button"
+                  class="channel-settings__child-remove"
+                  title="Отвязать"
+                  :disabled="saving"
+                  @click="removeChild(child.id)"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 1.25rem;">link_off</span>
+                </button>
+              </li>
+            </ul>
+            <p v-else class="caption channel-settings__hint" style="margin: 0.25rem 0 0.5rem 0;">
+              Нет дочерних чатов. Вы можете привязать к этому чату другие регулярные чаты.
+            </p>
+
+            <!-- Add Child Form -->
+            <div v-if="childCandidates.length > 0" class="channel-settings__add-child" style="display: grid; gap: 0.5rem; margin-top: 0.75rem;">
+              <select
+                v-model="selectedNewChildId"
+                class="channel-settings__select"
+                :disabled="saving"
+              >
+                <option value="">-- Выберите дочерний чат --</option>
+                <option v-for="item in childCandidates" :key="item.id" :value="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+              <button
+                type="button"
+                class="btn-secondary"
+                style="justify-self: start; padding: 0.35rem 0.75rem; font-size: 0.85rem;"
+                :disabled="saving || !selectedNewChildId"
+                @click="addChild"
+              >
+                + Добавить дочерний чат
+              </button>
+            </div>
+          </div>
         </section>
 
         <section class="channel-settings__section">
@@ -330,6 +425,6 @@ onMounted(() => {
 
         <p v-if="error" class="channel-settings__error">{{ error }}</p>
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseModal>
 </template>

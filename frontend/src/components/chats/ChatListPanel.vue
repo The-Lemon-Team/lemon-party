@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch, nextTick } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useChatFolders } from '@/composables/useChatFolders';
 import { useFoldersModal } from '@/composables/useFoldersModal';
@@ -23,6 +23,8 @@ type ChatListItem = {
   badge: number;
   pinned: boolean;
   canPin: boolean;
+  isChild?: boolean;
+  isLastChild?: boolean;
 };
 
 const collectionNameById = computed(() => {
@@ -44,37 +46,44 @@ function sortByRecency(a: Chat, b: Chat) {
   return bTs - aTs;
 }
 
-const chatItems = computed<ChatListItem[]>(() => {
-  const all = chats.allChats.slice();
+const visibleItems = computed<ChatListItem[]>(() => {
+  let folderChats = chats.allChats.slice();
+  if (!isAllChatsFolder.value) {
+    folderChats = folderChats.filter((chat) => chat.collectionId === selectedFolderId.value);
+  }
+
   if (isAllChatsFolder.value) {
-    all.sort((a, b) => {
+    folderChats.sort((a, b) => {
       const aPinned = a.isPinned ? 1 : 0;
       const bPinned = b.isPinned ? 1 : 0;
       if (aPinned !== bPinned) return bPinned - aPinned;
       return sortByRecency(a, b);
     });
   } else {
-    all.sort(sortByRecency);
+    folderChats.sort(sortByRecency);
   }
 
-  const childCountByParent = new Map<string, number>();
-  for (const item of all) {
-    if (!item.parentChatId) continue;
-    childCountByParent.set(
-      item.parentChatId,
-      (childCountByParent.get(item.parentChatId) ?? 0) + 1,
-    );
+  const folderChatIds = new Set(folderChats.map((c) => c.id));
+  const parents = folderChats.filter(
+    (c) => !c.parentChatId || !folderChatIds.has(c.parentChatId),
+  );
+
+  const childrenMap = new Map<string, Chat[]>();
+  for (const c of folderChats) {
+    if (c.parentChatId && folderChatIds.has(c.parentChatId)) {
+      if (!childrenMap.has(c.parentChatId)) {
+        childrenMap.set(c.parentChatId, []);
+      }
+      childrenMap.get(c.parentChatId)!.push(c);
+    }
   }
 
-  return all.map((chat) => {
+  function toItem(chat: Chat, isChild = false, isLastChild = false): ChatListItem {
     const collectionName = resolveCollectionName(chat);
     const isGeneral = chat.kind === 'GENERAL';
-    const isChild = Boolean(chat.parentChatId);
     const canPin = !chat.collectionId && !chat.parentChatId;
-    const childCount = childCountByParent.get(chat.id) ?? 0;
-    const badge = childCount > 0 ? childCount : 0;
-    const groupLabel =
-      isAllChatsFolder.value && collectionName ? collectionName : null;
+    const badge = 0;
+    const groupLabel = isAllChatsFolder.value && collectionName ? collectionName : null;
 
     return {
       chat,
@@ -89,13 +98,23 @@ const chatItems = computed<ChatListItem[]>(() => {
       badge,
       pinned: Boolean(chat.isPinned),
       canPin,
+      isChild,
+      isLastChild,
     };
-  });
-});
+  }
 
-const visibleItems = computed(() => {
-  if (isAllChatsFolder.value) return chatItems.value;
-  return chatItems.value.filter((item) => item.chat.collectionId === selectedFolderId.value);
+  const result: ChatListItem[] = [];
+  for (const parent of parents) {
+    result.push(toItem(parent, false, false));
+    const children = childrenMap.get(parent.id) ?? [];
+    children.sort(sortByRecency);
+    for (let i = 0; i < children.length; i++) {
+      const isLast = i === children.length - 1;
+      result.push(toItem(children[i], true, isLast));
+    }
+  }
+
+  return result;
 });
 
 function routeForChat(chat: Chat) {
@@ -136,13 +155,34 @@ function avatarText(chat: Chat) {
   return first || '💬';
 }
 
-async function createChat() {
-  const name = window.prompt('Название чата');
-  if (!name?.trim()) return;
+const showCreateModal = ref(false);
+const newChatName = ref('');
+const chatNameInput = ref<HTMLInputElement | null>(null);
+
+watch(showCreateModal, async (isOpen) => {
+  if (isOpen) {
+    await nextTick();
+    chatNameInput.value?.focus();
+  }
+});
+
+function openCreateModal() {
+  newChatName.value = '';
+  showCreateModal.value = true;
+}
+
+function closeCreateModal() {
+  showCreateModal.value = false;
+}
+
+async function submitCreateChat() {
+  const name = newChatName.value.trim();
+  if (!name) return;
   busy.value = true;
   try {
     const collectionId = isAllChatsFolder.value ? undefined : selectedFolderId.value;
-    await chats.createChat(name.trim(), collectionId);
+    await chats.createChat(name, collectionId);
+    closeCreateModal();
   } finally {
     busy.value = false;
   }
@@ -175,7 +215,7 @@ onMounted(() => {
         >
           Папки
         </button>
-        <button type="button" class="btn-primary" :disabled="busy" @click="createChat">
+        <button type="button" class="btn-primary" :disabled="busy" @click="openCreateModal">
           + Чат
         </button>
       </div>
@@ -189,6 +229,8 @@ onMounted(() => {
         :class="{
           'tg-chat-row--pinned': item.pinned,
           'tg-chat-row--active': isChatActive(item.chat),
+          'tg-chat-row--child': item.isChild,
+          'tg-chat-row--child-last': item.isLastChild,
         }"
       >
         <RouterLink :to="routeForChat(item.chat)" class="tg-chat-row__main">
@@ -200,9 +242,9 @@ onMounted(() => {
             </div>
             <div class="tg-chat-row__bottom">
               <p class="tg-chat-row__preview">{{ item.subtitle }}</p>
-              <span v-if="item.groupLabel" class="tg-chat-row__folder">{{ item.groupLabel }}</span>
               <span v-if="item.badge > 0" class="tg-chat-row__badge">{{ item.badge }}</span>
             </div>
+            <p v-if="item.groupLabel" class="tg-chat-row__folder">{{ item.groupLabel }}</p>
           </div>
         </RouterLink>
         <div v-if="item.canPin && isAllChatsFolder" class="tg-chat-row__actions">
@@ -227,6 +269,43 @@ onMounted(() => {
             : 'В этой группе пока нет чатов'
         }}
       </p>
+    </div>
+
+    <!-- Модальное окно создания нового чата -->
+    <div v-if="showCreateModal" class="folders-modal">
+      <div class="folders-modal__backdrop" @click="closeCreateModal" />
+
+      <section class="folders-modal__dialog" role="dialog" aria-labelledby="create-chat-title">
+        <header class="folders-modal__head">
+          <h2 id="create-chat-title" class="folders-modal__title">Новый чат</h2>
+          <button type="button" class="folders-modal__close" aria-label="Закрыть" @click="closeCreateModal">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+
+        <form @submit.prevent="submitCreateChat" class="folders-modal__body folders-modal__body--edit">
+          <label class="folders-modal__field">
+            <span class="folders-modal__field-label">Название чата</span>
+            <input
+              ref="chatNameInput"
+              v-model="newChatName"
+              type="text"
+              class="folders-modal__input"
+              placeholder="Например: Любимые книги"
+              :disabled="busy"
+            />
+          </label>
+
+          <div style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end;">
+            <button type="button" class="btn-secondary" :disabled="busy" @click="closeCreateModal">
+              Отмена
+            </button>
+            <button type="submit" class="btn-primary" :disabled="busy || !newChatName.trim()">
+              {{ busy ? 'Создание...' : 'Создать' }}
+            </button>
+          </div>
+        </form>
+      </section>
     </div>
   </div>
 </template>

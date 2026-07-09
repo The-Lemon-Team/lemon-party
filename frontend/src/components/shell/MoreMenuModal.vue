@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsPanel from '@/components/settings/SettingsPanel.vue';
+import BaseModal from '@/components/BaseModal.vue';
 
 const props = defineProps<{ open: boolean }>();
 
@@ -44,15 +45,15 @@ watch(
 </script>
 
 <template>
-  <div v-if="open" class="more-modal">
-    <div class="more-modal__backdrop" @click="closeModal" />
-
-    <section
-      class="more-modal__dialog"
-      :class="{ 'more-modal__dialog--wide': view === 'settings' }"
-      role="dialog"
-      :aria-labelledby="view === 'settings' ? 'more-settings-title' : 'more-menu-title'"
-    >
+  <BaseModal
+    :open="open"
+    :teleport="false"
+    modal-class="more-modal"
+    backdrop-class="more-modal__backdrop"
+    :dialog-class="`more-modal__dialog ${view === 'settings' ? 'more-modal__dialog--wide' : ''}`"
+    :aria-labelledby="view === 'settings' ? 'more-settings-title' : 'more-menu-title'"
+    @close="closeModal"
+  >
       <template v-if="view === 'menu'">
         <header class="more-modal__head">
           <h2 id="more-menu-title" class="more-modal__title">Ещё</h2>
@@ -116,6 +117,5 @@ watch(
           <SettingsPanel />
         </div>
       </template>
-    </section>
-  </div>
+  </BaseModal>
 </template>
