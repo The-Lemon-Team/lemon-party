@@ -28,9 +28,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const chatsLayoutPreference = ref<ChatsLayoutPreference>(loadChatsLayoutPreference());
   const welcomeSeen = ref(loadWelcomeSeen());
 
-  const logoRoute = computed(() =>
-    logoClickTarget.value === 'chat' ? '/chats' : '/filters',
-  );
+  const logoRoute = computed(() => '/chats');
 
   function setLogoClickTarget(target: LogoClickTarget) {
     logoClickTarget.value = target;

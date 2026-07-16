@@ -8,24 +8,15 @@ const props = defineProps<{ open: boolean }>();
 
 const emit = defineEmits<{ close: [] }>();
 
+const router = useRouter();
+
 type View = 'menu' | 'settings';
 
-const router = useRouter();
 const view = ref<View>('menu');
 
 function closeModal() {
   view.value = 'menu';
   emit('close');
-}
-
-function openGraph() {
-  closeModal();
-  router.push('/graph');
-}
-
-function openGroups() {
-  closeModal();
-  router.push('/groups');
 }
 
 function openSettings() {
@@ -34,6 +25,11 @@ function openSettings() {
 
 function backToMenu() {
   view.value = 'menu';
+}
+
+function navigateToTelegram() {
+  closeModal();
+  void router.push('/telegram');
 }
 
 watch(
@@ -64,25 +60,13 @@ watch(
 
         <ul class="more-modal__list">
           <li>
-            <button type="button" class="more-modal__row" @click="openGroups">
-              <span class="more-modal__row-icon more-modal__row-icon--groups">
-                <span class="material-symbols-outlined">account_tree</span>
+            <button type="button" class="more-modal__row" @click="navigateToTelegram">
+              <span class="more-modal__row-icon" style="background: rgba(112, 112, 255, 0.1); color: var(--accent-color, #7070ff); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%;">
+                <span class="material-symbols-outlined">import_export</span>
               </span>
               <span class="more-modal__row-text">
-                <span class="more-modal__row-name">Группы</span>
-                <span class="more-modal__row-meta">Иерархии и коллекции чатов</span>
-              </span>
-              <span class="material-symbols-outlined more-modal__row-chevron">chevron_right</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="more-modal__row" @click="openGraph">
-              <span class="more-modal__row-icon more-modal__row-icon--graph">
-                <span class="material-symbols-outlined">graph_5</span>
-              </span>
-              <span class="more-modal__row-text">
-                <span class="more-modal__row-name">Graph</span>
-                <span class="more-modal__row-meta">Визуализация связей чатов</span>
+                <span class="more-modal__row-name">Импорт Telegram</span>
+                <span class="more-modal__row-meta">Загрузка и парсинг result.json</span>
               </span>
               <span class="material-symbols-outlined more-modal__row-chevron">chevron_right</span>
             </button>

@@ -1,10 +1,23 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import federation from '@originjs/vite-plugin-federation';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig(({ mode }) => ({
   base: mode === 'electron' ? './' : '/',
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    federation({
+      name: 'host',
+      remotes: {
+        mfe_telegram: 'http://localhost:5174/assets/remoteEntry.js',
+      },
+      shared: ['vue', 'pinia', 'vue-router'],
+    }),
+  ],
+  build: {
+    target: 'esnext',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

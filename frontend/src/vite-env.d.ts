@@ -26,3 +26,10 @@ declare module '*.vue' {
   const component: DefineComponent<object, object, unknown>;
   export default component;
 }
+
+declare module 'mfe_telegram/TelegramExportViewer' {
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<object, object, unknown>;
+  export default component;
+}
+

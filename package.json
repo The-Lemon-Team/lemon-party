@@ -1,13 +1,27 @@
 {
   "name": "lemon-party",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "electron",
+    "packages/*"
+  ],
   "scripts": {
     "dev:backend": "npm run start:dev --prefix backend",
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:frontend:desktop": "npm run dev:desktop --prefix frontend",
     "dev:electron": "npm run start:dev --prefix electron",
+    "dev:mfe-telegram": "npm run dev --prefix packages/mfe-telegram",
+    "build:mfe-telegram": "npm run build --prefix packages/mfe-telegram",
+    "preview:mfe-telegram": "npm run preview --prefix packages/mfe-telegram",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run preview:mfe-telegram\"",
     "desktop": "node scripts/desktop.mjs",
     "desktop:shell": "node scripts/desktop.mjs --shell-only"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

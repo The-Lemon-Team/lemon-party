@@ -25,7 +25,6 @@ function onChatsClick() {
         </RouterLink>
 
         <nav class="header-nav">
-          <RouterLink to="/filters">Фильтры</RouterLink>
           <RouterLink
             v-if="auth.isAuthenticated"
             :to="{ name: 'chats-list' }"

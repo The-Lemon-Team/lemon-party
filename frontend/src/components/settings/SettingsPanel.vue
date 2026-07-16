@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import { useSettingsStore, type LogoClickTarget, type ChatsLayoutPreference } from '@/stores/settings';
+import { useSettingsStore, type ChatsLayoutPreference } from '@/stores/settings';
 
 const auth = useAuthStore();
 const settings = useSettingsStore();
@@ -24,11 +24,6 @@ const passwordSuccess = ref('');
 onMounted(() => {
   emailForm.value.email = auth.user?.email ?? '';
 });
-
-function onLogoTargetChange(event: Event) {
-  const value = (event.target as HTMLSelectElement).value as LogoClickTarget;
-  settings.setLogoClickTarget(value);
-}
 
 function onChatsLayoutChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value as ChatsLayoutPreference;
@@ -81,22 +76,7 @@ async function submitPassword() {
         Интерфейс
       </h3>
       <div class="settings-card">
-        <label class="settings-row">
-          <span class="settings-row__label">
-            <span class="settings-row__name">Клик по логотипу</span>
-            <span class="settings-row__hint caption">
-              Куда переходить при нажатии на «Lemon Party» в шапке
-            </span>
-          </span>
-          <select
-            class="settings-select"
-            :value="settings.logoClickTarget"
-            @change="onLogoTargetChange"
-          >
-            <option value="filters">Фильтры</option>
-            <option value="chat">Чаты</option>
-          </select>
-        </label>
+
         <label class="settings-row">
           <span class="settings-row__label">
             <span class="settings-row__name">Раскладка чатов</span>

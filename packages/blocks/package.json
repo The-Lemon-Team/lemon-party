@@ -15,9 +15,7 @@
     "test": "npm run build && node --test dist/serialize-document.test.js"
   },
   "devDependencies": {
+    "@types/node": "^22.10.7",
     "typescript": "^5.7.3"
-  },
-  "dependencies": {
-    "lemon-party": "file:../.."
   }
 }

@@ -34,7 +34,7 @@ const router = createRouter({
     return { top: 0 };
   },
   routes: [
-    { path: '/', redirect: '/filters' },
+    { path: '/', redirect: '/chats' },
     { path: '/filters', name: 'filters', component: FiltersView },
     { path: '/groups', name: 'groups', component: GroupsView, meta: { requiresAuth: true } },
     { path: '/tags', name: 'tags', component: TagsView, meta: { requiresAuth: true } },
@@ -65,6 +65,12 @@ const router = createRouter({
     { path: '/calendar', name: 'calendar', component: CalendarView, meta: { requiresAuth: true } },
     { path: '/top', name: 'top', component: TopView, meta: { requiresAuth: true } },
     { path: '/settings', name: 'settings', component: SettingsView, meta: { requiresAuth: true } },
+    {
+      path: '/telegram',
+      name: 'telegram-export',
+      component: () => import('mfe_telegram/TelegramExportViewer'),
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

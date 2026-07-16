@@ -76,7 +76,7 @@ onMounted(() => chats.load());
 
 <template>
   <aside class="shell-rail electron-nav tg-folders-rail" aria-label="Навигация приложения">
-    <RouterLink to="/filters" class="shell-rail__brand" title="lemon party">
+    <RouterLink to="/chats" class="shell-rail__brand" title="lemon party">
       <img src="/favicon.svg" alt="" width="32" height="32" />
     </RouterLink>
 
