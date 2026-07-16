@@ -33,9 +33,11 @@ function onChatsClick() {
           >
             Чаты
           </RouterLink>
+          <!--
           <RouterLink v-if="auth.isAuthenticated" to="/timeline" class="header-nav__wide">
             Лента
           </RouterLink>
+          -->
         </nav>
       </div>
 

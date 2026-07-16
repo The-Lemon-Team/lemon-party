@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import SettingsPanel from '@/components/settings/SettingsPanel.vue';
 import BaseModal from '@/components/BaseModal.vue';
 
@@ -8,7 +8,7 @@ const props = defineProps<{ open: boolean }>();
 
 const emit = defineEmits<{ close: [] }>();
 
-const router = useRouter();
+// const router = useRouter();
 
 type View = 'menu' | 'settings';
 
@@ -27,10 +27,12 @@ function backToMenu() {
   view.value = 'menu';
 }
 
+/*
 function navigateToTelegram() {
   closeModal();
   void router.push('/telegram');
 }
+*/
 
 watch(
   () => props.open,
@@ -59,6 +61,7 @@ watch(
         </header>
 
         <ul class="more-modal__list">
+          <!--
           <li>
             <button type="button" class="more-modal__row" @click="navigateToTelegram">
               <span class="more-modal__row-icon" style="background: rgba(112, 112, 255, 0.1); color: var(--accent-color, #7070ff); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%;">
@@ -71,6 +74,7 @@ watch(
               <span class="material-symbols-outlined more-modal__row-chevron">chevron_right</span>
             </button>
           </li>
+          -->
           <li>
             <button type="button" class="more-modal__row" @click="openSettings">
               <span class="more-modal__row-icon more-modal__row-icon--settings">

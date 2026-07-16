@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 
+// Trigger watch mode reload
 @Module({
   imports: [
     TagsModule,

@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => ({
   base: mode === 'electron' ? './' : '/',
   plugins: [
     vue(),
+    /*
     federation({
       name: 'host',
       remotes: {
@@ -14,6 +15,7 @@ export default defineConfig(({ mode }) => ({
       },
       shared: ['vue', 'pinia', 'vue-router'],
     }),
+    */
   ],
   build: {
     target: 'esnext',

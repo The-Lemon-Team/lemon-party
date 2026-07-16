@@ -65,12 +65,14 @@ const router = createRouter({
     { path: '/calendar', name: 'calendar', component: CalendarView, meta: { requiresAuth: true } },
     { path: '/top', name: 'top', component: TopView, meta: { requiresAuth: true } },
     { path: '/settings', name: 'settings', component: SettingsView, meta: { requiresAuth: true } },
+    /*
     {
       path: '/telegram',
       name: 'telegram-export',
       component: () => import('mfe_telegram/TelegramExportViewer'),
       meta: { requiresAuth: true },
     },
+    */
   ],
 });
 
