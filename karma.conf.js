@@ -21,7 +21,9 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [{ type: 'html' }, { type: 'text-summary' }],
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress'],
+    hostname: '127.0.0.1',
+    listenAddress: '127.0.0.1',
     browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {
       ChromeHeadlessCustom: {
@@ -32,13 +34,12 @@ module.exports = function (config) {
           '--disable-gpu',
           '--disable-dev-shm-usage',
           '--disable-software-rasterizer',
-          '--remote-debugging-port=9222',
         ],
       },
     },
-    browserDisconnectTimeout: 60000,
+    browserDisconnectTimeout: 180000,
     browserDisconnectTolerance: 3,
-    browserNoActivityTimeout: 60000,
+    browserNoActivityTimeout: 180000,
     singleRun: true,
     restartOnFileChange: false,
   });
