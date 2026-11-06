@@ -1,26 +1,30 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ArenaGameSubMode } from '../../core/models/flow.models';
 import { NeuronArenaService } from '../../core/services/neuron-arena.service';
-import { PartyRealtimeService } from '../../core/services/party-realtime.service';
-import { ActorAvatarComponent } from './actor-avatar.component';
+import { ArenaActorDeckComponent } from './arena-actor-deck.component';
+import { ArenaCombineViewComponent } from './arena-combine-view.component';
+import { ArenaDesireDeckComponent } from './arena-desire-deck.component';
 import { ArenaModalsComponent } from './arena-modals.component';
+import { ArenaVersusViewComponent } from './arena-versus-view.component';
+import { PartyCloudComponent } from './party-cloud.component';
 
 @Component({
   selector: 'app-neuron-arena',
   standalone: true,
   imports: [
     AsyncPipe,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    ActorAvatarComponent,
+    ArenaActorDeckComponent,
+    ArenaCombineViewComponent,
+    ArenaVersusViewComponent,
+    ArenaDesireDeckComponent,
     ArenaModalsComponent,
+    PartyCloudComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-space-lg">
-      <!-- 1. TOP HERO & MULTIROOM & REAL-TIME STRIP -->
+      <!-- 1. TOP HERO & NEURON SCOPE BAR -->
       <section
         class="bg-surface-container-lowest rounded-2xl p-space-md shadow-xs border border-outline-variant/25 flex flex-col gap-space-md"
       >
@@ -30,29 +34,29 @@ import { ArenaModalsComponent } from './arena-modals.component';
               class="w-12 h-12 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 shadow-xs"
             >
               <span class="material-symbols-rounded text-2xl" style="font-variation-settings: 'FILL' 1">
-                celebration
+                diversity_3
               </span>
             </div>
             <div>
               <div class="flex flex-wrap items-center gap-2">
                 <h1 class="font-headline-sm text-lg font-bold text-on-surface">
-                  Lemon Party · Мультирум, Хроно-Облако и Тимбилдинг
+                  Neuron Arena · Карточки Желаний, Персонажи и Versus-Тимбилдинг
                 </h1>
                 <span
                   class="font-label-code-sm text-[11px] px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-semibold"
                 >
-                  app scope: party.*
+                  ltree scope: arena.*
                 </span>
                 <span
-                  class="inline-flex items-center gap-1.5 font-label-code-sm text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold"
+                  class="inline-flex items-center gap-1 font-label-code-sm text-[11px] px-2.5 py-0.5 rounded-full bg-primary-container/70 text-on-primary-container font-bold"
                 >
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  Real-Time SSE/WS ({{ realtime.latencyMs() }}ms)
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                  Versus Mode + Летопись Карточек
                 </span>
               </div>
               <p class="font-body-sm text-xs text-on-surface-variant mt-1 max-w-4xl">
-                Пространство реального времени для выбора досуга. Переключайтесь между <strong>Мультирум-сессиями</strong>,
-                исследуйте парящие объекты в <strong>Хроно-Облаке</strong> и разыгрывайте карточки желаний.
+                Игровое реактивное пространство тимбилдинга. Меняйте <strong>Главного Персонажа</strong> на ходу,
+                оставляйте от его имени <strong>Войсы</strong> и разыгрывайте <strong>Карточки Желаний</strong>.
               </p>
             </div>
           </div>
@@ -60,7 +64,7 @@ import { ArenaModalsComponent } from './arena-modals.component';
           <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
             <button
               type="button"
-              (click)="arena.openNewDesireCardModal()"
+              (click)="showNewDesireCardModal.set(true)"
               class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container font-label-ui text-xs font-bold transition-all"
             >
               <span class="material-symbols-rounded text-base">style</span>
@@ -68,7 +72,7 @@ import { ArenaModalsComponent } from './arena-modals.component';
             </button>
             <button
               type="button"
-              (click)="arena.openNewActorModal()"
+              (click)="showNewActorModal.set(true)"
               class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container font-label-ui text-xs font-bold transition-all"
             >
               <span class="material-symbols-rounded text-base">person_add</span>
@@ -76,7 +80,7 @@ import { ArenaModalsComponent } from './arena-modals.component';
             </button>
             <button
               type="button"
-              (click)="arena.openNewParadoxModal()"
+              (click)="showNewParadoxModal.set(true)"
               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-on-primary font-label-ui text-xs font-bold hover:opacity-95 transition-all shadow-xs"
             >
               <span class="material-symbols-rounded text-base">flare</span>
@@ -85,165 +89,147 @@ import { ArenaModalsComponent } from './arena-modals.component';
           </div>
         </div>
 
-        <!-- 2. MULTIROOM SELECTOR BAR -->
-        <div class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="font-label-ui text-xs font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
-              <span class="material-symbols-rounded text-base text-primary">meeting_room</span>
-              Комнаты Multiroom:
-            </span>
-
-            @for (room of (realtime.rooms$ | async) ?? []; track room.id) {
-              <button
-                type="button"
-                (click)="realtime.switchRoom(room.id)"
-                class="px-3 py-1.5 rounded-xl font-label-ui text-xs font-semibold transition-all border inline-flex items-center gap-1.5"
-                [class]="
-                  (realtime.activeRoomId$ | async) === room.id
-                    ? 'bg-primary text-on-primary border-primary shadow-xs font-bold'
-                    : 'bg-surface-container-lowest text-on-surface hover:border-primary/50 border-outline-variant/30'
-                "
+        @if (arena.deckAnalytics$ | async; as deckStats) {
+          <div
+            class="p-3.5 rounded-xl bg-primary-container/25 border border-primary/30 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
+          >
+            <div class="flex items-start gap-3">
+              <div
+                class="w-9 h-9 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 mt-0.5"
               >
-                <span>{{ room.title }}</span>
-                <span class="opacity-75 text-[10px] font-label-code-sm">({{ room.participantsCount }}👥)</span>
-              </button>
-            }
-          </div>
-
-          <div class="flex items-center gap-2 self-start md:self-center">
-            @if (realtime.getActiveRoom(); as currentRoom) {
-              <div class="text-[11px] font-label-code-sm text-on-surface-variant flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Слот: <strong>{{ currentRoom.scheduledLabel }}</strong></span>
+                <span class="material-symbols-rounded text-lg">insights</span>
               </div>
-            }
-          </div>
-        </div>
-
-        <!-- 3. LIVE EVENT STREAM TICKER -->
-        @if ((realtime.events$ | async)?.[0]; as latestEvent) {
-          <div class="px-3 py-2 rounded-xl bg-primary-container/20 border border-primary/25 flex items-center justify-between gap-3 text-xs font-body-sm">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="material-symbols-rounded text-primary text-base flex-shrink-0 animate-bounce">
-                sensors
-              </span>
-              <span class="font-label-ui font-bold text-primary flex-shrink-0">Real-Time Событие:</span>
-              <span class="text-on-surface truncate">
-                <strong>{{ latestEvent.actorName }}</strong> {{ latestEvent.message }}
-              </span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-label-ui text-xs font-bold uppercase tracking-wider text-on-surface">
+                    Глобальный вывод из истории Карточек Желаний:
+                  </span>
+                  @if (deckStats.topWinnerCard; as champ) {
+                    <span
+                      class="font-label-code-sm text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold"
+                    >
+                      Лидер побед: «{{ champ.title }}» ({{ champ.winRatePercent }}% WR)
+                    </span>
+                  }
+                </div>
+                <p class="font-body-sm text-xs text-on-surface mt-1 font-medium">
+                  {{ deckStats.headlineConclusion }}
+                </p>
+              </div>
             </div>
-            <span class="font-label-code-sm text-[10px] text-outline flex-shrink-0">
-              Комната: {{ latestEvent.roomTitle }}
-            </span>
+
+            <button
+              type="button"
+              (click)="scrollToSection('desire-deck-section')"
+              class="px-3 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/40 text-on-surface hover:border-primary font-label-ui text-xs font-bold transition-all flex-shrink-0 self-start lg:self-center inline-flex items-center gap-1.5 shadow-xs"
+            >
+              <span class="material-symbols-rounded text-sm">history_edu</span>
+              <span>Открыть Летопись Карточек ({{ (arena.desireCards$ | async)?.length || 0 }})</span>
+            </button>
           </div>
         }
       </section>
 
-      <!-- 4. LEMON PARTY SUBROUTING TABS -->
-      <nav
-        aria-label="Lemon Party Navigation"
-        class="flex items-center justify-between gap-3 p-1.5 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex-wrap"
+      <!-- 2 & 3. CHARACTER DECK + LEAD VOICE STUDIO -->
+      <app-arena-actor-deck />
+
+      <!-- ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ ПОЛЯ: COMBINE MODE vs VERSUS MODE -->
+      <section
+        class="bg-surface-container-lowest rounded-2xl p-3 shadow-xs border-2 border-primary/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
       >
-        <div class="flex items-center gap-2 flex-wrap">
-          <a
-            routerLink="/party"
-            [routerLinkActiveOptions]="{ exact: true }"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-xs font-bold border-primary/40"
-            class="px-4 py-2.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface border border-transparent transition-all inline-flex items-center gap-2"
-          >
-            <span class="material-symbols-rounded text-base">swords</span>
-            <span>🎮 Игровое Поле & Схватки</span>
-          </a>
-
-          <a
-            routerLink="/party/cloud"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-xs font-bold border-primary/40"
-            class="px-4 py-2.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface border border-transparent transition-all inline-flex items-center gap-2"
-          >
-            <span class="material-symbols-rounded text-base text-cyan-600">cloud</span>
-            <span>☁️ Хроно-Облако (Календарь & Orbit)</span>
-            <span
-              class="font-label-code-sm text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 font-bold"
-            >
-              Левитация
-            </span>
-          </a>
-
-          <a
-            routerLink="/party/cards"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-xs font-bold border-primary/40"
-            class="px-4 py-2.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface border border-transparent transition-all inline-flex items-center gap-2"
-          >
-            <span class="material-symbols-rounded text-base">style</span>
-            <span>🃏 Карточки Желаний</span>
-            <span
-              class="font-label-code-sm text-[10px] px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface-variant font-bold"
-            >
-              {{ ((arena.desireCards$ | async) ?? []).length }}
-            </span>
-          </a>
-
-          <a
-            routerLink="/party/heroes"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-xs font-bold border-primary/40"
-            class="px-4 py-2.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface border border-transparent transition-all inline-flex items-center gap-2"
-          >
-            <span class="material-symbols-rounded text-base">diversity_3</span>
-            <span>👥 Персонажи (30 героев)</span>
-            <span
-              class="font-label-code-sm text-[10px] px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface-variant font-bold"
-            >
-              {{ ((arena.actors$ | async) ?? []).length }}
-            </span>
-          </a>
-
-          <a
-            routerLink="/party/chronicle"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-xs font-bold border-primary/40"
-            class="px-4 py-2.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface border border-transparent transition-all inline-flex items-center gap-2"
-          >
-            <span class="material-symbols-rounded text-base">spatial_audio_off</span>
-            <span>🎙️ Хроника Войсов & AI Датасет</span>
-            <span
-              class="font-label-code-sm text-[10px] px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface-variant font-bold"
-            >
-              {{ ((arena.activeVoices$ | async) ?? []).length }}
-            </span>
-          </a>
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-rounded text-primary text-2xl">tune</span>
+          <div>
+            <div class="font-headline-sm text-sm font-bold text-on-surface">
+              Режим работы Реактивного Поля:
+            </div>
+            <div class="font-body-sm text-xs text-on-surface-variant">
+              Переключайтесь между совмещением занятий (<strong>Combine Mode</strong>), битвой альтернатив (<strong>Versus Mode</strong>) и парящими облачками мыслей (<strong>Chrono Cloud</strong>)
+            </div>
+          </div>
         </div>
 
-        @if (arena.leadActor$ | async; as lead) {
-          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/30">
-            <app-actor-avatar
-              [avatar]="lead.avatarIcon"
-              containerClass="w-6 h-6 rounded-lg ring-1 ring-primary flex-shrink-0"
-            />
-            <span class="font-label-code-sm text-xs text-on-surface font-semibold truncate max-w-44">
-              Лидер: {{ lead.name }}
-            </span>
-            <span class="w-2 h-2 rounded-full bg-primary animate-pulse" title="Микрофон активен"></span>
-          </div>
-        }
-      </nav>
+        <div class="flex items-center gap-1.5 bg-surface-container-low p-1.5 rounded-xl border border-outline-variant/30 flex-wrap">
+          <button
+            type="button"
+            (click)="gameSubMode.set('COMBINE')"
+            class="px-3.5 py-2 rounded-lg font-label-ui text-xs font-bold transition-all inline-flex items-center gap-1.5"
+            [class]="
+              gameSubMode() === 'COMBINE'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'text-on-surface-variant hover:text-on-surface'
+            "
+          >
+            <span class="material-symbols-rounded text-base">push_pin</span>
+            <span>🧩 Combine Mode (Поле Времени + Pin)</span>
+          </button>
 
-      <!-- 5. SUBROUTING OUTLET -->
-      <router-outlet />
+          <button
+            type="button"
+            (click)="gameSubMode.set('VERSUS')"
+            class="px-3.5 py-2 rounded-lg font-label-ui text-xs font-bold transition-all inline-flex items-center gap-1.5"
+            [class]="
+              gameSubMode() === 'VERSUS'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'text-on-surface-variant hover:text-on-surface'
+            "
+          >
+            <span class="material-symbols-rounded text-base">swords</span>
+            <span>⚔️ Versus Mode (Спор Желаний)</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="gameSubMode.set('CLOUD')"
+            class="px-3.5 py-2 rounded-lg font-label-ui text-xs font-bold transition-all inline-flex items-center gap-1.5"
+            [class]="
+              gameSubMode() === 'CLOUD'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'text-on-surface-variant hover:text-on-surface'
+            "
+          >
+            <span class="material-symbols-rounded text-base">cloud</span>
+            <span>☁️ Chrono Cloud (Летающие облачка)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 4A / 4B / 4C. COMBINE, VERSUS OR CLOUD MODE VIEW -->
+      @if (gameSubMode() === 'COMBINE') {
+        <app-arena-combine-view />
+      } @else if (gameSubMode() === 'VERSUS') {
+        <app-arena-versus-view (inspectCardHistory)="openCardHistory($event)" />
+      } @else if (gameSubMode() === 'CLOUD') {
+        <app-party-cloud />
+      }
+
+      <!-- 5 & 6. DESIRE CARDS DECK & BOTTOM CHRONICLE -->
+      <app-arena-desire-deck (openNewCardModal)="showNewDesireCardModal.set(true)" />
     </div>
 
-    <!-- 6. MODALS (SHARED ACROSS LEMON PARTY SUBROUTES) -->
+    <!-- MODALS -->
     <app-arena-modals
-      [showNewDesireCardModal]="arena.showNewDesireCardModal()"
-      [showNewActorModal]="arena.showNewActorModal()"
-      [showNewParadoxModal]="arena.showNewParadoxModal()"
-      (closeNewDesireCardModal)="arena.closeNewDesireCardModal()"
-      (closeNewActorModal)="arena.closeNewActorModal()"
-      (closeNewParadoxModal)="arena.closeNewParadoxModal()"
+      [showNewDesireCardModal]="showNewDesireCardModal()"
+      [showNewActorModal]="showNewActorModal()"
+      [showNewParadoxModal]="showNewParadoxModal()"
+      (closeNewDesireCardModal)="showNewDesireCardModal.set(false)"
+      (closeNewActorModal)="showNewActorModal.set(false)"
+      (closeNewParadoxModal)="showNewParadoxModal.set(false)"
     />
   `,
 })
 export class NeuronArenaComponent {
   protected readonly arena = inject(NeuronArenaService);
-  protected readonly realtime = inject(PartyRealtimeService);
+
+  readonly gameSubMode = signal<ArenaGameSubMode>('COMBINE');
+  readonly showNewDesireCardModal = signal(false);
+  readonly showNewActorModal = signal(false);
+  readonly showNewParadoxModal = signal(false);
+
+  openCardHistory(cardId: string): void {
+    this.arena.inspectDesireCard(cardId);
+    this.scrollToSection('desire-deck-section');
+  }
 
   scrollToSection(elementId: string): void {
     if (typeof document !== 'undefined') {

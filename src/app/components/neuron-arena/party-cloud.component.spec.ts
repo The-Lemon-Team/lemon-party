@@ -212,4 +212,122 @@ describe('PartyCloudComponent', () => {
       expect(component.isCharacterPickerOpen()).toBeFalse();
     }
   });
+
+  it('should open and close inspect modal for a cloud note', () => {
+    const note = component.activeDateNotes()[0];
+    expect(component.inspectedNote()).toBeNull();
+
+    component.inspectNote(note);
+    expect(component.inspectedNote()).toEqual(note);
+
+    component.closeInspectModal();
+    expect(component.inspectedNote()).toBeNull();
+    expect(component.inspectedActor()).toBeNull();
+  });
+
+  it('should select pitch actor from inspected note', () => {
+    let actors: any[] = [];
+    arena.actors$.subscribe((a) => (actors = a)).unsubscribe();
+    if (actors.length > 0) {
+      component.allActors.set(actors);
+      const note = { ...component.activeDateNotes()[0], actorId: actors[0].id };
+      component.inspectNote(note);
+
+      component.selectPitchActorFromInspect();
+      expect(component.activePitchActor()?.id).toBe(actors[0].id);
+      expect(component.inspectedNote()).toBeNull();
+    }
+  });
+
+  it('should delete note from inspect modal', () => {
+    const countBefore = component.activeDateNotes().length;
+    const note = component.activeDateNotes()[0];
+    component.inspectNote(note);
+
+    component.deleteInspectedNote();
+    expect(component.activeDateNotes().length).toBe(countBefore - 1);
+    expect(component.inspectedNote()).toBeNull();
+  });
+
+  it('should toggle and select day vibe and persist to storage', () => {
+    expect(component.isVibePickerOpen()).toBeFalse();
+    component.toggleVibePicker();
+    expect(component.isVibePickerOpen()).toBeTrue();
+
+    component.selectVibe('SYNTHWAVE');
+    expect(component.selectedVibeId()).toBe('SYNTHWAVE');
+    expect(component.currentVibe().name).toContain('Неоновый Космос');
+    expect(component.isVibePickerOpen()).toBeFalse();
+
+    component.closeVibePickerModal();
+    expect(component.isVibePickerOpen()).toBeFalse();
+  });
+
+  it('should group notes within 30-minute threshold into a TimelineCluster', () => {
+    const clusters = component.groupedTimelineNotes();
+    expect(clusters.length).toBeGreaterThan(0);
+
+    // Find the 15:58–16:15 cluster
+    const cluster = clusters.find((c) => c.isCluster && c.notes.length >= 2);
+    expect(cluster).toBeTruthy();
+    expect(cluster!.notes.length).toBeGreaterThanOrEqual(2);
+    expect(cluster!.isCluster).toBeTrue();
+    expect(cluster!.timeSpanLabel).toBeDefined();
+
+    // Notes in this cluster must all be within CLUSTER_GAP_MINUTES (30 min) of the cluster start
+    const startMins = cluster!.notes[0].timeMinutes;
+    for (const n of cluster!.notes) {
+      expect(n.timeMinutes - startMins).toBeLessThanOrEqual(component.CLUSTER_GAP_MINUTES);
+    }
+  });
+
+  it('should paginate through clustered notes with prev/next and direct index', () => {
+    const clusters = component.groupedTimelineNotes();
+    const cluster = clusters.find((c) => c.isCluster)!;
+    expect(cluster).toBeTruthy();
+
+    const clusterId = cluster.id;
+    const total = cluster.notes.length;
+    const fakeEvent = new MouseEvent('click');
+
+    expect(component.getClusterActiveIndex(clusterId)).toBe(0);
+    expect(component.getClusterActiveNote(cluster).id).toBe(cluster.notes[0].id);
+
+    // Next note
+    component.nextClusterNote(clusterId, total, fakeEvent);
+    expect(component.getClusterActiveIndex(clusterId)).toBe(1);
+    expect(component.getClusterActiveNote(cluster).id).toBe(cluster.notes[1].id);
+
+    // Direct jump
+    component.setClusterIndex(clusterId, total - 1, fakeEvent);
+    expect(component.getClusterActiveIndex(clusterId)).toBe(total - 1);
+    expect(component.getClusterActiveNote(cluster).id).toBe(cluster.notes[total - 1].id);
+
+    // Previous note wraps around
+    component.prevClusterNote(clusterId, total, fakeEvent);
+    expect(component.getClusterActiveIndex(clusterId)).toBe(total - 2);
+  });
+
+  it('should navigate through cluster notes within the inspect modal', () => {
+    const clusters = component.groupedTimelineNotes();
+    const cluster = clusters.find((c) => c.isCluster)!;
+    expect(cluster).toBeTruthy();
+
+    // Inspect the first note of the cluster
+    component.inspectNote(cluster.notes[0]);
+    expect(component.inspectedNote()?.id).toBe(cluster.notes[0].id);
+
+    const foundCluster = component.getInspectedNoteCluster();
+    expect(foundCluster).toBeTruthy();
+    expect(foundCluster?.id).toBe(cluster.id);
+    expect(component.getInspectedNoteClusterIndex(foundCluster!)).toBe(0);
+
+    // Next note in modal
+    component.nextInspectedClusterNote(foundCluster!);
+    expect(component.inspectedNote()?.id).toBe(cluster.notes[1].id);
+
+    // Prev note in modal (back to first)
+    component.prevInspectedClusterNote(foundCluster!);
+    expect(component.inspectedNote()?.id).toBe(cluster.notes[0].id);
+  });
 });

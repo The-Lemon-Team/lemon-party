@@ -45,7 +45,72 @@ export interface IdeaPitchPreset {
   colorTheme: ArenaAccentColor;
 }
 
-const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v2';
+export type CloudDayVibeId = 'CHRONO_DAYFLOW' | 'COZY_CHILL' | 'SYNTHWAVE' | 'NATURE_ZEN';
+
+export interface CloudDayVibe {
+  id: CloudDayVibeId;
+  name: string;
+  icon: string;
+  badge: string;
+  description: string;
+  skyGradient: string;
+  stageBorderClass: string;
+  atmosphereEmoji: string[];
+}
+
+export interface TimelineCluster {
+  id: string;
+  timeMinutes: number;
+  time: string;
+  timeSpanLabel?: string;
+  notes: CloudDayNote[];
+  isCluster: boolean;
+}
+
+export const CLOUD_DAY_VIBES: CloudDayVibe[] = [
+  {
+    id: 'CHRONO_DAYFLOW',
+    name: 'Хроно-День (Рассвет → Ночь)',
+    icon: '🌅',
+    badge: 'Живой Градиент',
+    description: 'Плавный суточный переход от утренней зари через полуденное солнце к закату и ночному небу с пунктирными меридианами.',
+    skyGradient: 'bg-gradient-to-r from-amber-100/60 via-sky-100/40 via-purple-100/45 to-indigo-900/25 dark:from-amber-950/30 dark:via-sky-950/20 dark:via-purple-950/35 dark:to-slate-950/80',
+    stageBorderClass: 'border-amber-300/60 dark:border-amber-400/30',
+    atmosphereEmoji: ['🌅', '☀️', '🌆', '🌙'],
+  },
+  {
+    id: 'COZY_CHILL',
+    name: 'Пятничный Чилл & Уют',
+    icon: '🛋️',
+    badge: 'Тёплый вечер',
+    description: 'Пастельные кофейные и персиковые тона, атмосфера пледа, горячего чая и дружеских посиделок.',
+    skyGradient: 'bg-gradient-to-r from-orange-100/70 via-rose-100/50 via-amber-100/60 to-purple-200/40 dark:from-amber-950/40 dark:via-rose-950/30 dark:to-purple-950/40',
+    stageBorderClass: 'border-rose-300/60 dark:border-rose-400/30',
+    atmosphereEmoji: ['☕', '🕯️', '🍕', '🛋️'],
+  },
+  {
+    id: 'SYNTHWAVE',
+    name: 'Неоновый Космос & Синтвейв',
+    icon: '🌌',
+    badge: 'Cyber Party',
+    description: 'Глубокий неоновый космос, фиолетовые закатные градиенты и синтвейв-вайб под треки DJ Pixel.',
+    skyGradient: 'bg-gradient-to-r from-indigo-200/50 via-purple-200/60 via-pink-200/40 to-slate-900/60 dark:from-[#0f1123] dark:via-[#1c1236] dark:via-[#2b1040] dark:to-[#0a0c1a]',
+    stageBorderClass: 'border-purple-400/60 dark:border-purple-500/40',
+    atmosphereEmoji: ['🕹️', '✨', '🎧', '🪐'],
+  },
+  {
+    id: 'NATURE_ZEN',
+    name: 'Горный Дзен & Свежесть',
+    icon: '🌲',
+    badge: 'Эко-Баланс',
+    description: 'Свежие бирюзовые и изумрудные тона утреннего леса, чистый воздух и кристальная ясность мыслей.',
+    skyGradient: 'bg-gradient-to-r from-emerald-100/60 via-teal-100/50 via-cyan-100/45 to-sky-200/50 dark:from-emerald-950/35 dark:via-teal-950/25 dark:to-cyan-950/40',
+    stageBorderClass: 'border-emerald-300/60 dark:border-emerald-400/30',
+    atmosphereEmoji: ['🍃', '☀️', '🌲', '✨'],
+  },
+];
+
+const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v3';
 
 const SEED_NOTES: Record<string, CloudDayNote[]> = {
   '2026-11-06': [
@@ -116,6 +181,57 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
       votesCount: 2,
       moodEmoji: '⚡',
       createdAt: '2026-11-06T14:20:00Z',
+    },
+    {
+      id: 'note-today-cluster-1',
+      dateKey: '2026-11-06',
+      time: '15:58',
+      timeMinutes: 958,
+      type: 'proposal',
+      actorId: 'actor-zeus',
+      actorName: 'Зевс',
+      actorAvatar: 'zeus',
+      actorAccent: 'amber',
+      actorTitle: 'Громовержец & Лидер',
+      text: 'Заказать пиццу с пепперони и двойным сыром к вечерней игре!',
+      supporters: ['actor-alexey', 'actor-solomon'],
+      votesCount: 3,
+      moodEmoji: '🍕',
+      createdAt: '2026-11-06T15:58:00Z',
+    },
+    {
+      id: 'note-today-cluster-2',
+      dateKey: '2026-11-06',
+      time: '15:58',
+      timeMinutes: 958,
+      type: 'thought',
+      actorId: 'actor-zeus',
+      actorName: 'Зевс',
+      actorAvatar: 'zeus',
+      actorAccent: 'amber',
+      actorTitle: 'Громовержец & Лидер',
+      text: 'И лимонад со льдом, пятничный настрой должен быть на максимуме.',
+      supporters: ['actor-misha'],
+      votesCount: 2,
+      moodEmoji: '🥤',
+      createdAt: '2026-11-06T15:58:30Z',
+    },
+    {
+      id: 'note-today-cluster-3',
+      dateKey: '2026-11-06',
+      time: '16:15',
+      timeMinutes: 975,
+      type: 'action',
+      actorId: 'actor-solomon',
+      actorName: 'Мудрец Соломон',
+      actorAvatar: 'solomon',
+      actorAccent: 'violet',
+      actorTitle: 'Хранитель Баланса',
+      text: 'Заказ пиццы утвержден! Курьер прибудет к 17:00.',
+      supporters: ['actor-zeus', 'actor-kot-rebel'],
+      votesCount: 4,
+      moodEmoji: '📦',
+      createdAt: '2026-11-06T16:15:00Z',
     },
     {
       id: 'note-today-5',
@@ -549,111 +665,233 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
                 </div>
               </div>
 
-              <!-- Day Mood Badge -->
-              <div class="flex items-center gap-2">
-                <span class="px-3 py-1 rounded-full bg-amber-400/15 text-amber-800 dark:text-amber-300 border border-amber-400/30 text-xs font-bold font-label-code-sm flex items-center gap-1.5">
+              <!-- Day Mood & Vibe Badges -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <!-- Vibe Selector Button -->
+                <button
+                  type="button"
+                  (click)="toggleVibePicker()"
+                  class="px-3 py-1.5 rounded-full bg-surface-container-high/90 hover:bg-surface-container-highest text-on-surface border border-outline-variant/30 text-xs font-bold font-label-ui flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                  title="Настроить вайб и атмосферный фон дня"
+                >
+                  <span>{{ currentVibe().icon }}</span>
+                  <span>Вайб: {{ currentVibe().name.split(' (')[0] }}</span>
+                  <span class="material-symbols-rounded text-sm text-outline">tune</span>
+                </button>
+
+                <!-- Synergy Badge -->
+                <span class="px-3 py-1.5 rounded-full bg-amber-400/15 text-amber-800 dark:text-amber-300 border border-amber-400/30 text-xs font-bold font-label-code-sm flex items-center gap-1.5 shadow-2xs">
                   <span class="text-sm">☀️</span>
-                  <span>{{ synergyPercent() }}% Синергия дня</span>
+                  <span>{{ synergyPercent() }}% Синергия</span>
                 </span>
               </div>
             </div>
 
-            <!-- CENTRAL IN-CLOUD TIMELINE SKY (CANDLESTICK STEM CHART) -->
-            <div class="relative z-10 flex-1 my-4 min-h-[500px] flex flex-col justify-end min-w-[920px] px-8 pb-3 pt-4">
-              <!-- CANDLESTICK TIME GRID COLUMNS (BACKGROUND) -->
-              <div class="absolute inset-0 bottom-16 flex pointer-events-none opacity-25">
+            <!-- CENTRAL IN-CLOUD TIMELINE SKY (CANDLESTICK STEM CHART WITH ATMOSPHERIC DAY SECTORS) -->
+            <div class="relative z-10 flex-1 my-4 min-h-[520px] flex flex-col justify-end min-w-[920px] px-8 pb-3 pt-4 rounded-3xl overflow-hidden border border-outline-variant/20 shadow-inner isolate">
+              <!-- 1. DYNAMIC SKY GRADIENT & TIME-OF-DAY ATMOSPHERIC SECTORS -->
+              <div class="absolute inset-0 transition-all duration-700 pointer-events-none -z-10" [class]="currentVibe().skyGradient">
+                <!-- Ambient sky lighting wash -->
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/40 dark:to-slate-950/50"></div>
+
+                <!-- TIME OF DAY DIVIDERS WITH DASHED MERIDIANS & SECTOR CHIPS -->
+                <!-- Sector 1: Morning (08:00 — 12:00 = 25% width) -->
+                <div class="absolute inset-y-0 left-0 w-[25%] flex flex-col justify-between p-3 border-r-2 border-dashed border-amber-500/35 pointer-events-none">
+                  <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-900 dark:text-amber-200 border border-amber-400/40 text-[10px] font-bold font-label-code-sm self-start backdrop-blur-xs shadow-2xs">
+                    <span>🌅</span>
+                    <span>Утро (08:00 — 12:00)</span>
+                  </div>
+                  <div class="text-3xl opacity-15 self-center mb-16 select-none">{{ currentVibe().atmosphereEmoji[0] }}</div>
+                </div>
+
+                <!-- Sector 2: Midday / Afternoon (12:00 — 17:00 = 31.25% width) -->
+                <div class="absolute inset-y-0 left-[25%] w-[31.25%] flex flex-col justify-between p-3 border-r-2 border-dashed border-sky-500/35 pointer-events-none">
+                  <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-400/20 text-sky-900 dark:text-sky-200 border border-sky-400/40 text-[10px] font-bold font-label-code-sm self-start backdrop-blur-xs shadow-2xs">
+                    <span>☀️</span>
+                    <span>День (12:00 — 17:00)</span>
+                  </div>
+                  <div class="text-3xl opacity-15 self-center mb-16 select-none">{{ currentVibe().atmosphereEmoji[1] }}</div>
+                </div>
+
+                <!-- Sector 3: Evening / Sunset (17:00 — 21:00 = 25% width) -->
+                <div class="absolute inset-y-0 left-[56.25%] w-[25%] flex flex-col justify-between p-3 border-r-2 border-dashed border-purple-500/35 pointer-events-none">
+                  <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-400/20 text-purple-900 dark:text-purple-200 border border-purple-400/40 text-[10px] font-bold font-label-code-sm self-start backdrop-blur-xs shadow-2xs">
+                    <span>🌆</span>
+                    <span>Вечер (17:00 — 21:00)</span>
+                  </div>
+                  <div class="text-3xl opacity-15 self-center mb-16 select-none">{{ currentVibe().atmosphereEmoji[2] }}</div>
+                </div>
+
+                <!-- Sector 4: Night / Starlight (21:00 — 24:00 = 18.75% width) -->
+                <div class="absolute inset-y-0 left-[81.25%] right-0 flex flex-col justify-between p-3 pointer-events-none">
+                  <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-900 dark:text-indigo-200 border border-indigo-400/40 text-[10px] font-bold font-label-code-sm self-start backdrop-blur-xs shadow-2xs">
+                    <span>🌙</span>
+                    <span>Ночь (21:00 — 24:00)</span>
+                  </div>
+                  <div class="text-3xl opacity-15 self-center mb-16 select-none">{{ currentVibe().atmosphereEmoji[3] }}</div>
+                </div>
+              </div>
+
+              <!-- CANDLESTICK TIME GRID COLUMNS (BACKGROUND SUBTLE TICKS) -->
+              <div class="absolute inset-0 bottom-16 flex pointer-events-none opacity-20 -z-5">
                 @for (m of hourMilestones; track m.label; let midx = $index) {
                   <div
-                    class="h-full border-r border-dashed border-outline-variant/40 flex-1 relative flex flex-col justify-between"
-                    [class]="midx % 2 === 0 ? 'bg-amber-400/[0.02]' : 'bg-transparent'"
+                    class="h-full border-r border-dotted border-outline-variant/40 flex-1 relative flex flex-col justify-between"
                   >
                     <span class="text-[9px] font-mono text-outline/60 p-2 font-semibold">{{ m.label }}</span>
                   </div>
                 }
               </div>
 
-              <!-- FLOATING THOUGHTS ANCHORED BY VERTICAL CANDLESTICK COLUMNS -->
-              @for (note of visibleNotes(); track note.id; let idx = $index) {
-                <div
-                  class="absolute bottom-11 flex flex-col items-center thought-pop group z-10 hover:z-30 pointer-events-auto"
-                  [style.left]="getTimelinePercent(note.timeMinutes) + '%'"
-                  style="transform: translateX(-50%);"
-                >
-                  <!-- 1. THOUGHT / PROPOSAL BUBBLE (FLOATING IN THE AIR) -->
+              <!-- FLOATING THOUGHTS ANCHORED BY VERTICAL CANDLESTICK COLUMNS (WITH 30-MIN STACK CLUSTERING) -->
+              @for (cluster of groupedTimelineNotes(); track cluster.id; let idx = $index) {
+                @if (getClusterActiveNote(cluster); as note) {
                   <div
-                    (click)="inspectNote(note)"
-                    class="relative p-3 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs shadow-md group-hover:shadow-2xl group-hover:scale-105 transition-all duration-200 border-2 w-[220px] sm:w-[250px] cursor-pointer"
-                    [class]="getNoteBorderClass(note.actorAccent)"
+                    class="absolute bottom-11 flex flex-col items-center thought-pop group z-10 hover:z-30 pointer-events-auto"
+                    [style.left]="getTimelinePercent(cluster.timeMinutes) + '%'"
+                    style="transform: translateX(-50%);"
                   >
-                    <!-- Mini Header: Avatar + Name + Time -->
-                    <div class="flex items-center gap-2 mb-1.5">
-                      <app-actor-avatar
-                        [avatar]="note.actorAvatar"
-                        containerClass="w-7 h-7 rounded-xl shadow-xs ring-1 ring-outline-variant/30 flex-shrink-0"
-                      />
-                      <div class="flex flex-col truncate">
-                        <span class="text-xs font-bold text-on-surface truncate">{{ note.actorName }}</span>
-                        <span class="text-[10px] font-mono text-outline font-semibold">{{ note.time }}</span>
+                    <!-- 1. THOUGHT / PROPOSAL BUBBLE (FLOATING IN THE AIR WITH CARD STACK) -->
+                    <div class="relative w-[220px] sm:w-[250px]">
+                      <!-- Back Stack Layer 2 (If 3+ notes in cluster) -->
+                      @if (cluster.isCluster && cluster.notes.length > 2) {
+                        <div
+                          class="absolute inset-0 rounded-2xl bg-amber-100/70 dark:bg-slate-700/60 border-2 border-outline-variant/30 shadow-2xs pointer-events-none transform -translate-x-1.5 translate-y-2.5 -rotate-2 -z-20 transition-transform group-hover:-translate-x-2.5 group-hover:translate-y-3.5"
+                        ></div>
+                      }
+
+                      <!-- Back Stack Layer 1 (If cluster) -->
+                      @if (cluster.isCluster) {
+                        <div
+                          class="absolute inset-0 rounded-2xl bg-white/75 dark:bg-slate-800/75 border-2 border-outline-variant/40 shadow-xs pointer-events-none transform translate-x-1.5 translate-y-1.5 rotate-2 -z-10 transition-transform group-hover:translate-x-2.5 group-hover:translate-y-2.5"
+                        ></div>
+                      }
+
+                      <!-- Main Active Note Card -->
+                      <div
+                        (click)="inspectNote(note)"
+                        class="relative p-3 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs shadow-md group-hover:shadow-2xl group-hover:scale-105 transition-all duration-200 border-2 w-full cursor-pointer"
+                        [class]="getNoteBorderClass(note.actorAccent)"
+                      >
+                        <!-- Mini Header: Avatar + Name + Stack Paginator + Emoji -->
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <app-actor-avatar
+                            [avatar]="note.actorAvatar"
+                            containerClass="w-7 h-7 rounded-xl shadow-xs ring-1 ring-outline-variant/30 flex-shrink-0"
+                          />
+                          <div class="flex flex-col truncate min-w-0 flex-1">
+                            <span class="text-xs font-bold text-on-surface truncate">{{ note.actorName }}</span>
+                            <span class="text-[10px] font-mono text-outline font-semibold">{{ note.time }}</span>
+                          </div>
+
+                          <!-- Mini Stack Paginator -->
+                          @if (cluster.isCluster) {
+                            <div
+                              (click)="$event.stopPropagation()"
+                              class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-500/15 dark:bg-amber-400/20 text-amber-800 dark:text-amber-300 font-mono text-[10px] font-bold shadow-2xs flex-shrink-0 select-none"
+                              [title]="'Стопка: 30-минутное окно (' + cluster.notes.length + ' мыслей)'"
+                            >
+                              <button
+                                type="button"
+                                (click)="prevClusterNote(cluster.id, cluster.notes.length, $event)"
+                                class="w-4 h-4 rounded hover:bg-amber-500/30 flex items-center justify-center transition-colors cursor-pointer text-xs font-black"
+                                title="Предыдущая мысль в стопке"
+                              >
+                                ‹
+                              </button>
+                              <span class="px-0.5">{{ getClusterActiveIndex(cluster.id) + 1 }}/{{ cluster.notes.length }}</span>
+                              <button
+                                type="button"
+                                (click)="nextClusterNote(cluster.id, cluster.notes.length, $event)"
+                                class="w-4 h-4 rounded hover:bg-amber-500/30 flex items-center justify-center transition-colors cursor-pointer text-xs font-black"
+                                title="Следующая мысль в стопке"
+                              >
+                                ›
+                              </button>
+                            </div>
+                          }
+
+                          <span class="ml-0.5 text-sm flex-shrink-0" [title]="getTypeLabel(note.type)">
+                            {{ getTypeEmoji(note.type) }}
+                          </span>
+                        </div>
+
+                        <!-- Thought Text -->
+                        <p class="text-xs font-body-sm text-on-surface leading-snug line-clamp-3 italic min-h-[2.5rem]">
+                          «{{ note.text }}»
+                        </p>
+
+                        <!-- Bubble Footer with +1 Support, Dot Indicators & Delete -->
+                        <div class="flex items-center justify-between gap-1 mt-2 pt-1.5 border-t border-outline-variant/20">
+                          <button
+                            type="button"
+                            (click)="voteForNote(note.id, $event)"
+                            class="px-2 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold font-label-code-sm inline-flex items-center gap-1 transition-transform active:scale-95 cursor-pointer"
+                            title="Поддержать мысль персонажа (+1)"
+                          >
+                            <span>❤️</span>
+                            <span>{{ note.votesCount }}</span>
+                          </button>
+
+                          <!-- Dot indicators for direct jumps inside stack -->
+                          @if (cluster.isCluster) {
+                            <div class="flex items-center gap-1" (click)="$event.stopPropagation()">
+                              @for (item of cluster.notes; track item.id; let dotIdx = $index) {
+                                <button
+                                  type="button"
+                                  (click)="setClusterIndex(cluster.id, dotIdx, $event)"
+                                  class="h-1.5 rounded-full transition-all cursor-pointer"
+                                  [class]="dotIdx === getClusterActiveIndex(cluster.id) ? 'w-3.5 bg-amber-500' : 'w-1.5 bg-outline-variant/60 hover:bg-outline-variant'"
+                                  [title]="'Мысль ' + (dotIdx + 1) + ': ' + item.actorName + ' (' + item.time + ')'"
+                                ></button>
+                              }
+                            </div>
+                          }
+
+                          <button
+                            type="button"
+                            (click)="deleteNote(note.id, $event)"
+                            class="opacity-0 group-hover:opacity-100 p-0.5 rounded text-outline hover:text-rose-500 transition-opacity"
+                            title="Удалить мысль"
+                          >
+                            <span class="material-symbols-rounded text-sm">close</span>
+                          </button>
+                        </div>
+
+                        <!-- Triangular bottom tail pointing to candlestick column -->
+                        <div
+                          class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-800 rotate-45 border-b-2 border-r-2"
+                          [class]="getNoteBorderClass(note.actorAccent)"
+                        ></div>
                       </div>
-                      <span class="ml-auto text-sm" [title]="getTypeLabel(note.type)">
-                        {{ getTypeEmoji(note.type) }}
+                    </div>
+
+                    <!-- 2. VERTICAL CANDLESTICK COLUMN / STEM (CONNECTS BUBBLE DOWN TO TIMELINE) -->
+                    <div
+                      class="w-1.5 rounded-full transition-all group-hover:w-2.5 shadow-xs my-0.5"
+                      [class]="getAccentStemClasses(note.actorAccent)"
+                      [style.height.px]="getNoteStemHeight(idx)"
+                    ></div>
+
+                    <!-- 3. BASE PIN ON THE TIMELINE ROAD -->
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="rounded-full ring-2 ring-white dark:ring-slate-900 shadow-xs flex items-center justify-center transition-transform group-hover:scale-125"
+                        [class]="cluster.isCluster ? 'w-5 h-5 font-mono text-[10px] font-bold text-white' : 'w-3.5 h-3.5'"
+                        [class]="getAccentGlowClasses(note.actorAccent)"
+                      >
+                        @if (cluster.isCluster) {
+                          <span>{{ cluster.notes.length }}</span>
+                        } @else {
+                          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                        }
+                      </div>
+                      <span class="text-[9px] font-mono font-bold text-on-surface-variant bg-white/90 dark:bg-slate-900/90 px-1 py-0.2 rounded shadow-2xs mt-0.5 whitespace-nowrap">
+                        {{ cluster.time }}
                       </span>
                     </div>
-
-                    <!-- Thought Text -->
-                    <p class="text-xs font-body-sm text-on-surface leading-snug line-clamp-3 italic">
-                      «{{ note.text }}»
-                    </p>
-
-                    <!-- Bubble Footer with +1 Support and Delete -->
-                    <div class="flex items-center justify-between gap-1 mt-2 pt-1.5 border-t border-outline-variant/20">
-                      <button
-                        type="button"
-                        (click)="voteForNote(note.id, $event)"
-                        class="px-2 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold font-label-code-sm inline-flex items-center gap-1 transition-transform active:scale-95 cursor-pointer"
-                        title="Поддержать мысль персонажа (+1)"
-                      >
-                        <span>❤️</span>
-                        <span>{{ note.votesCount }}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        (click)="deleteNote(note.id, $event)"
-                        class="opacity-0 group-hover:opacity-100 p-0.5 rounded text-outline hover:text-rose-500 transition-opacity"
-                        title="Удалить мысль"
-                      >
-                        <span class="material-symbols-rounded text-sm">close</span>
-                      </button>
-                    </div>
-
-                    <!-- Triangular bottom tail pointing to candlestick column -->
-                    <div
-                      class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-800 rotate-45 border-b-2 border-r-2"
-                      [class]="getNoteBorderClass(note.actorAccent)"
-                    ></div>
                   </div>
-
-                  <!-- 2. VERTICAL CANDLESTICK COLUMN / STEM (CONNECTS BUBBLE DOWN TO TIMELINE) -->
-                  <div
-                    class="w-1.5 rounded-full transition-all group-hover:w-2.5 shadow-xs my-0.5"
-                    [class]="getAccentStemClasses(note.actorAccent)"
-                    [style.height.px]="getNoteStemHeight(idx)"
-                  ></div>
-
-                  <!-- 3. BASE PIN ON THE TIMELINE ROAD -->
-                  <div class="flex flex-col items-center">
-                    <div
-                      class="w-3.5 h-3.5 rounded-full ring-2 ring-white dark:ring-slate-900 shadow-xs flex items-center justify-center transition-transform group-hover:scale-125"
-                      [class]="getAccentGlowClasses(note.actorAccent)"
-                    >
-                      <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                    </div>
-                    <span class="text-[9px] font-mono font-bold text-on-surface-variant bg-white/90 dark:bg-slate-900/90 px-1 py-0.2 rounded shadow-2xs mt-0.5 whitespace-nowrap">
-                      {{ note.time }}
-                    </span>
-                  </div>
-                </div>
+                }
               }
 
               <!-- THE BOTTOM TIMELINE AXIS (TRADING CHART FLOOR) -->
@@ -1086,6 +1324,324 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
           </div>
         </div>
       }
+
+      <!-- 8. MODAL: INSPECT DAY NOTE / CARD DETAIL (COMPLIES WITH MODAL DIALOGS RULE) -->
+      @if (inspectedNote(); as note) {
+        <div
+          appModalOverlay
+          [appModalOverlayDismissable]="true"
+          (overlayClose)="closeInspectModal()"
+          aria-labelledby="inspect-note-modal-title"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+        >
+          <div
+            (click)="$event.stopPropagation()"
+            class="w-full max-w-lg rounded-3xl bg-surface-container-lowest p-6 shadow-2xl border border-outline-variant/30 flex flex-col gap-4 text-on-surface animate-scale-in"
+          >
+            <!-- Header with Explicit Close Button & Cluster Paginator -->
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">{{ getTypeEmoji(note.type) }}</span>
+                <h2 id="inspect-note-modal-title" class="font-headline-sm text-base font-bold text-on-surface">
+                  {{ getTypeLabel(note.type) }}: {{ note.actorName }}
+                </h2>
+              </div>
+              <div class="flex items-center gap-2">
+                @if (getInspectedNoteCluster(); as cluster) {
+                  <div
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 dark:bg-amber-400/20 text-amber-800 dark:text-amber-300 font-mono text-xs font-bold"
+                    [title]="'Навигация по стопке (' + cluster.notes.length + ' мыслей)'"
+                  >
+                    <button
+                      type="button"
+                      (click)="prevInspectedClusterNote(cluster)"
+                      class="w-5 h-5 rounded hover:bg-amber-500/30 flex items-center justify-center transition-colors cursor-pointer text-sm font-black"
+                      title="Предыдущая мысль в стопке"
+                    >
+                      ‹
+                    </button>
+                    <span>
+                      {{ getInspectedNoteClusterIndex(cluster) + 1 }} / {{ cluster.notes.length }}
+                    </span>
+                    <button
+                      type="button"
+                      (click)="nextInspectedClusterNote(cluster)"
+                      class="w-5 h-5 rounded hover:bg-amber-500/30 flex items-center justify-center transition-colors cursor-pointer text-sm font-black"
+                      title="Следующая мысль в стопке"
+                    >
+                      ›
+                    </button>
+                  </div>
+                }
+
+                <button
+                  type="button"
+                  (click)="closeInspectModal()"
+                  class="p-1.5 rounded-xl text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
+                  aria-label="Закрыть"
+                >
+                  <span class="material-symbols-rounded text-xl">close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero Identity Strip -->
+            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+              <app-actor-avatar
+                [avatar]="note.actorAvatar"
+                containerClass="w-14 h-14 rounded-2xl shadow-sm ring-2 ring-primary/40 flex-shrink-0"
+              />
+              <div class="flex flex-col min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-headline-sm text-base font-black text-on-surface truncate">{{ note.actorName }}</span>
+                  <span class="text-[11px] px-2 py-0.5 rounded-full font-label-code-sm font-bold" [class]="getNoteBorderClass(note.actorAccent)">
+                    {{ getTypeEmoji(note.type) }} {{ getTypeLabel(note.type) }}
+                  </span>
+                </div>
+                <span class="text-xs font-label-ui text-primary font-semibold truncate">{{ note.actorTitle || inspectedActor()?.title }}</span>
+                <div class="flex items-center gap-2 text-[11px] font-mono text-outline mt-0.5">
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-rounded text-xs">schedule</span>
+                    <span>{{ note.time }}</span>
+                  </span>
+                  <span>·</span>
+                  <span>{{ getActiveDateFormatted() }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hybrid Model Badges (Pin in Hero, Pin in Cloud, Visibility, Forked) -->
+            <div class="flex items-center gap-1.5 flex-wrap px-1">
+              @if (note.isPinnedToHero) {
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary font-mono text-[10px] font-bold">
+                  <span class="material-symbols-rounded text-xs">push_pin</span>
+                  <span>В карточке героя</span>
+                </span>
+              }
+              @if (note.isPinnedToCloud) {
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-800 dark:text-sky-300 font-mono text-[10px] font-bold">
+                  <span class="material-symbols-rounded text-xs">cloud</span>
+                  <span>Запинено в облаках</span>
+                </span>
+              }
+              @if (note.visibility === 'PRIVATE') {
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary-container text-on-primary-container font-mono text-[10px] font-bold">
+                  <span class="material-symbols-rounded text-xs">lock</span>
+                  <span>Личная заметка</span>
+                </span>
+              } @else {
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 font-mono text-[10px] font-semibold">
+                  <span class="material-symbols-rounded text-xs">public</span>
+                  <span>Общий Хаб</span>
+                </span>
+              }
+              @if (note.forkedFromNoteId) {
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-mono text-[10px]">
+                  <span class="material-symbols-rounded text-xs">download_done</span>
+                  <span>Забрано из Общего облака ({{ note.forkedFromAuthorName }})</span>
+                </span>
+              }
+            </div>
+
+            <!-- Note Text Bubble -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 shadow-inner relative flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-label-code-sm uppercase tracking-wider text-outline font-bold">
+                  Содержание:
+                </span>
+                <span class="text-lg">{{ note.moodEmoji }}</span>
+              </div>
+              <p class="font-body-lg text-sm sm:text-base text-on-surface italic leading-relaxed whitespace-pre-wrap select-text">
+                «{{ note.text }}»
+              </p>
+            </div>
+
+            <!-- Supporters & Likes Strip -->
+            <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-high/60 border border-outline-variant/25 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold font-label-ui text-on-surface">Поддержка мысли:</span>
+                <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  ❤️ {{ note.votesCount }}
+                </span>
+              </div>
+              <button
+                type="button"
+                (click)="voteForNote(note.id)"
+                class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold font-label-ui inline-flex items-center gap-1.5 shadow-xs transition-transform active:scale-95 cursor-pointer"
+              >
+                <span>❤️</span>
+                <span>Поддержать (+1)</span>
+              </button>
+            </div>
+
+            @if (inspectedActor()?.quote) {
+              <div class="text-xs text-on-surface-variant flex items-center gap-2 italic px-1">
+                <span class="material-symbols-rounded text-sm text-outline">format_quote</span>
+                <span class="truncate">Цитата героя: «{{ inspectedActor()!.quote }}»</span>
+              </div>
+            }
+
+            <!-- Footer: Hero Roleplay Switch, Adopt to Private, Pin, Delete & Close Button -->
+            <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  (click)="selectPitchActorFromInspect()"
+                  class="px-3 py-1.5 rounded-xl bg-primary-container text-on-primary-container hover:brightness-105 font-label-ui text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                  title="Выбрать этого героя в нижней плашке"
+                >
+                  <span class="material-symbols-rounded text-sm">theater_comedy</span>
+                  <span>Действовать как герой</span>
+                </button>
+
+                <!-- Adopt to Private / Забрать себе в личные -->
+                <button
+                  type="button"
+                  (click)="adoptInspectedNoteToPrivate()"
+                  class="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 font-label-ui text-xs font-bold inline-flex items-center gap-1 cursor-pointer transition-colors border border-amber-500/30"
+                  title="Забрать эту мысль из Общего облака себе в личный блокнот героя"
+                >
+                  <span class="material-symbols-rounded text-sm">file_download</span>
+                  <span>Забрать себе</span>
+                </button>
+
+                <!-- Pin in Hero toggle -->
+                <button
+                  type="button"
+                  (click)="togglePinInspectedToHero()"
+                  class="px-2.5 py-1.5 rounded-xl font-label-ui text-xs font-bold border transition-colors inline-flex items-center gap-1 cursor-pointer"
+                  [class]="
+                    note.isPinnedToHero
+                      ? 'bg-primary text-on-primary border-primary'
+                      : 'bg-surface-container text-on-surface-variant border-outline-variant/30 hover:text-on-surface'
+                  "
+                  title="Закрепить или открепить в карточке этого персонажа"
+                >
+                  <span class="material-symbols-rounded text-sm">push_pin</span>
+                  <span>{{ note.isPinnedToHero ? 'В герое 📌' : '📌 В героя' }}</span>
+                </button>
+
+                <!-- Pin in Cloud toggle -->
+                <button
+                  type="button"
+                  (click)="togglePinInspectedToCloud()"
+                  class="px-2.5 py-1.5 rounded-xl font-label-ui text-xs font-bold border transition-colors inline-flex items-center gap-1 cursor-pointer"
+                  [class]="
+                    note.isPinnedToCloud
+                      ? 'bg-sky-600 text-white border-sky-600'
+                      : 'bg-surface-container text-on-surface-variant border-outline-variant/30 hover:text-on-surface'
+                  "
+                  title="Закрепить или открепить в летающих облачках"
+                >
+                  <span class="material-symbols-rounded text-sm">cloud</span>
+                  <span>{{ note.isPinnedToCloud ? 'В облаках ☁️' : '☁️ В облака' }}</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="deleteInspectedNote()"
+                  class="p-1.5 rounded-xl text-outline hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                  title="Удалить мысль"
+                  aria-label="Удалить"
+                >
+                  <span class="material-symbols-rounded text-lg">delete</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                (click)="closeInspectModal()"
+                class="px-4 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-ui text-xs font-bold cursor-pointer transition-colors"
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 9. MODAL: DAY VIBE SELECTOR (MEETS STRICT MODAL RULES) -->
+      @if (isVibePickerOpen()) {
+        <div
+          appModalOverlay
+          [appModalOverlayDismissable]="true"
+          (overlayClose)="closeVibePickerModal()"
+          aria-labelledby="vibe-picker-modal-title"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+        >
+          <div
+            (click)="$event.stopPropagation()"
+            class="w-full max-w-lg rounded-3xl bg-surface-container-lowest p-6 shadow-2xl border border-outline-variant/30 flex flex-col gap-4 text-on-surface animate-scale-in"
+          >
+            <!-- Header with Explicit Close Button -->
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-rounded text-primary text-2xl">palette</span>
+                <h2 id="vibe-picker-modal-title" class="font-headline-sm text-base font-bold text-on-surface">
+                  Настроить Вайб & Фон Небосвода
+                </h2>
+              </div>
+              <button
+                type="button"
+                (click)="closeVibePickerModal()"
+                class="p-1.5 rounded-xl text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
+                aria-label="Закрыть"
+              >
+                <span class="material-symbols-rounded text-xl">close</span>
+              </button>
+            </div>
+
+            <!-- Vibe Presets List -->
+            <div class="flex flex-col gap-2.5">
+              @for (vibe of vibes; track vibe.id) {
+                <button
+                  type="button"
+                  (click)="selectVibe(vibe.id)"
+                  class="p-3.5 rounded-2xl border flex items-center justify-between gap-3 text-left transition-all cursor-pointer group"
+                  [class]="
+                    selectedVibeId() === vibe.id
+                      ? 'border-primary bg-primary-container/20 ring-2 ring-primary shadow-xs'
+                      : 'border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high'
+                  "
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-3xl group-hover:scale-110 transition-transform">{{ vibe.icon }}</span>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-2">
+                        <span class="font-label-ui text-sm font-bold text-on-surface">{{ vibe.name }}</span>
+                        <span class="text-[10px] font-label-code-sm font-extrabold px-2 py-0.2 rounded-full bg-primary/10 text-primary">
+                          {{ vibe.badge }}
+                        </span>
+                      </div>
+                      <span class="font-body-sm text-xs text-on-surface-variant leading-snug mt-0.5">
+                        {{ vibe.description }}
+                      </span>
+                    </div>
+                  </div>
+
+                  @if (selectedVibeId() === vibe.id) {
+                    <span class="material-symbols-rounded text-primary text-xl flex-shrink-0">check_circle</span>
+                  }
+                </button>
+              }
+            </div>
+
+            <!-- Footer with Cancel Button -->
+            <div class="flex items-center justify-between pt-3 border-t border-outline-variant/20">
+              <span class="text-xs font-label-code-sm text-outline">
+                Вайб сохраняется в браузере
+              </span>
+              <button
+                type="button"
+                (click)="closeVibePickerModal()"
+                class="px-4 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-ui text-xs font-bold cursor-pointer"
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   `,
 })
@@ -1095,6 +1651,16 @@ export class PartyCloudComponent {
   protected readonly sound = inject(PartySoundService);
   protected readonly getAccentAvatarClasses = getAccentAvatarClasses;
   protected readonly getAccentPillClasses = getAccentPillClasses;
+
+  // Day Vibes system
+  readonly vibes = CLOUD_DAY_VIBES;
+  readonly selectedVibeId = signal<CloudDayVibeId>(this.loadInitialVibe());
+  readonly isVibePickerOpen = signal<boolean>(false);
+
+  readonly currentVibe = computed<CloudDayVibe>(() => {
+    const id = this.selectedVibeId();
+    return CLOUD_DAY_VIBES.find((v) => v.id === id) || CLOUD_DAY_VIBES[0];
+  });
 
   readonly viewMode = signal<CloudViewMode>('CLOUD_TIMELINE');
   readonly activeLayer = signal<CloudFilterLayer>('ALL');
@@ -1117,6 +1683,7 @@ export class PartyCloudComponent {
   readonly isCharacterPickerOpen = signal<boolean>(false);
 
   // Inspector & Space Creation
+  readonly inspectedNote = signal<CloudDayNote | null>(null);
   readonly inspectedActor = signal<ArenaActorCard | null>(null);
   readonly inspectedCard = signal<ArenaDesireCard | null>(null);
   readonly activeSpaceTitle = signal<string>('Friday Chill Core');
@@ -1218,6 +1785,37 @@ export class PartyCloudComponent {
     return notes;
   });
 
+  readonly CLUSTER_GAP_MINUTES = 30;
+  readonly clusterActiveIndices = signal<Record<string, number>>({});
+
+  readonly groupedTimelineNotes = computed<TimelineCluster[]>(() => {
+    const notes = this.visibleNotes();
+    if (notes.length === 0) return [];
+
+    const clusters: TimelineCluster[] = [];
+    let currentGroup: CloudDayNote[] = [];
+
+    for (const note of notes) {
+      if (currentGroup.length === 0) {
+        currentGroup.push(note);
+      } else {
+        const clusterStart = currentGroup[0].timeMinutes;
+        if (note.timeMinutes - clusterStart <= this.CLUSTER_GAP_MINUTES) {
+          currentGroup.push(note);
+        } else {
+          clusters.push(this.buildTimelineCluster(currentGroup));
+          currentGroup = [note];
+        }
+      }
+    }
+
+    if (currentGroup.length > 0) {
+      clusters.push(this.buildTimelineCluster(currentGroup));
+    }
+
+    return clusters;
+  });
+
   readonly inputPlaceholder = computed(() => {
     const actor = this.activePitchActor();
     const name = actor ? actor.name : 'Участник';
@@ -1257,6 +1855,10 @@ export class PartyCloudComponent {
       if (!this.activePitchActor() && actors.length > 0) {
         this.activePitchActor.set(actors[0]);
       }
+    });
+
+    this.arena.notesMap$.subscribe((map) => {
+      this.notesStore.set(map);
     });
   }
 
@@ -1506,6 +2108,10 @@ export class PartyCloudComponent {
       return updated;
     });
 
+    if (this.inspectedNote()?.id === noteId) {
+      this.inspectedNote.update((n) => (n ? { ...n, votesCount: n.votesCount + 1 } : null));
+    }
+
     this.sound.playTick(1.2);
 
     this.realtime.broadcastEvent({
@@ -1553,12 +2159,149 @@ export class PartyCloudComponent {
   }
 
   inspectNote(note: CloudDayNote): void {
-    let allActors: ArenaActorCard[] = [];
-    this.arena.actors$.subscribe((a) => (allActors = a)).unsubscribe();
-    const found = allActors.find((a) => a.id === note.actorId);
-    if (found) {
-      this.inspectedActor.set(found);
+    this.inspectedNote.set(note);
+    const found = this.allActors().find((a) => a.id === note.actorId);
+    this.inspectedActor.set(found || null);
+    this.sound.playClick();
+  }
+
+  closeInspectModal(): void {
+    this.inspectedNote.set(null);
+    this.inspectedActor.set(null);
+  }
+
+  selectPitchActorFromInspect(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    const actor = this.allActors().find((a) => a.id === note.actorId);
+    if (actor) {
+      this.selectPitchActor(actor);
     }
+    this.closeInspectModal();
+  }
+
+  deleteInspectedNote(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    this.arena.deleteNote(note.id);
+    this.deleteNote(note.id);
+    this.closeInspectModal();
+  }
+
+  adoptInspectedNoteToPrivate(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    const adopted = this.arena.adoptNoteToPrivate(note.id);
+    this.sound.playWin();
+    if (adopted) {
+      this.inspectedNote.set(adopted);
+    }
+  }
+
+  togglePinInspectedToHero(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    this.arena.togglePinToHero(note.id);
+    this.inspectedNote.update((n) => (n ? { ...n, isPinnedToHero: !n.isPinnedToHero } : null));
+    this.sound.playClick();
+  }
+
+  togglePinInspectedToCloud(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    this.arena.togglePinToCloud(note.id);
+    this.inspectedNote.update((n) => (n ? { ...n, isPinnedToCloud: !n.isPinnedToCloud } : null));
+    this.sound.playClick();
+  }
+
+  buildTimelineCluster(notes: CloudDayNote[]): TimelineCluster {
+    const isCluster = notes.length > 1;
+    const first = notes[0];
+    const last = notes[notes.length - 1];
+
+    const avgMinutes = Math.round(
+      notes.reduce((acc, n) => acc + n.timeMinutes, 0) / notes.length
+    );
+
+    const timeLabel = (!isCluster || first.time === last.time)
+      ? first.time
+      : `${first.time}–${last.time}`;
+
+    const timeSpanLabel = isCluster
+      ? (first.time === last.time
+          ? `${first.time} (${notes.length} мыслей в стопке)`
+          : `${first.time}–${last.time} (${notes.length} мыслей в стопке)`)
+      : undefined;
+
+    const id = isCluster
+      ? `cluster-${first.id}-${notes.length}-${first.timeMinutes}`
+      : first.id;
+
+    return {
+      id,
+      timeMinutes: avgMinutes,
+      time: timeLabel,
+      timeSpanLabel,
+      notes,
+      isCluster,
+    };
+  }
+
+  getClusterActiveIndex(clusterId: string): number {
+    return this.clusterActiveIndices()[clusterId] ?? 0;
+  }
+
+  getClusterActiveNote(cluster: TimelineCluster): CloudDayNote {
+    const idx = this.getClusterActiveIndex(cluster.id);
+    const clamped = Math.max(0, Math.min(cluster.notes.length - 1, idx));
+    return cluster.notes[clamped] ?? cluster.notes[0];
+  }
+
+  setClusterIndex(clusterId: string, index: number, event?: MouseEvent): void {
+    if (event) event.stopPropagation();
+    this.clusterActiveIndices.update((map) => ({ ...map, [clusterId]: index }));
+    this.sound.playTick();
+  }
+
+  prevClusterNote(clusterId: string, total: number, event: MouseEvent): void {
+    event.stopPropagation();
+    const current = this.getClusterActiveIndex(clusterId);
+    const prev = (current - 1 + total) % total;
+    this.clusterActiveIndices.update((map) => ({ ...map, [clusterId]: prev }));
+    this.sound.playTick();
+  }
+
+  nextClusterNote(clusterId: string, total: number, event: MouseEvent): void {
+    event.stopPropagation();
+    const current = this.getClusterActiveIndex(clusterId);
+    const next = (current + 1) % total;
+    this.clusterActiveIndices.update((map) => ({ ...map, [clusterId]: next }));
+    this.sound.playTick();
+  }
+
+  getInspectedNoteCluster(): TimelineCluster | null {
+    const note = this.inspectedNote();
+    if (!note) return null;
+    return this.groupedTimelineNotes().find((c) => c.isCluster && c.notes.some((n) => n.id === note.id)) ?? null;
+  }
+
+  getInspectedNoteClusterIndex(cluster: TimelineCluster): number {
+    const note = this.inspectedNote();
+    if (!note) return 0;
+    const idx = cluster.notes.findIndex((n) => n.id === note.id);
+    return idx >= 0 ? idx : 0;
+  }
+
+  prevInspectedClusterNote(cluster: TimelineCluster): void {
+    const current = this.getInspectedNoteClusterIndex(cluster);
+    const prev = (current - 1 + cluster.notes.length) % cluster.notes.length;
+    this.inspectNote(cluster.notes[prev]);
+  }
+
+  nextInspectedClusterNote(cluster: TimelineCluster): void {
+    const current = this.getInspectedNoteClusterIndex(cluster);
+    const next = (current + 1) % cluster.notes.length;
+    this.inspectNote(cluster.notes[next]);
   }
 
   toggleCharacterPicker(): void {
@@ -1643,6 +2386,38 @@ export class PartyCloudComponent {
       roomTitle: slot.title,
       message: `закрепил активность в слоте «${slot.dayLabel}, ${slot.timeSlot}»!`,
     });
+  }
+
+  selectVibe(vibeId: CloudDayVibeId): void {
+    this.selectedVibeId.set(vibeId);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('lemon-party:day-vibe', vibeId);
+      } catch {}
+    }
+    this.isVibePickerOpen.set(false);
+    this.sound.playWin();
+  }
+
+  toggleVibePicker(): void {
+    this.isVibePickerOpen.update((open) => !open);
+    this.sound.playClick();
+  }
+
+  closeVibePickerModal(): void {
+    this.isVibePickerOpen.set(false);
+  }
+
+  private loadInitialVibe(): CloudDayVibeId {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('lemon-party:day-vibe') as CloudDayVibeId;
+        if (stored && CLOUD_DAY_VIBES.some((v) => v.id === stored)) {
+          return stored;
+        }
+      } catch {}
+    }
+    return 'CHRONO_DAYFLOW';
   }
 
   private getCurrentTimeString(): string {

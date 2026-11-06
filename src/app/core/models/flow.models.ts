@@ -458,7 +458,7 @@ export interface NeuralTrainingSample {
 
 /* ---------- Combine Mode (Поле Времени, Активная Зона (Pin) и Карточки Истории Совмещений) ---------- */
 
-export type ArenaGameSubMode = 'VERSUS' | 'COMBINE';
+export type ArenaGameSubMode = 'VERSUS' | 'COMBINE' | 'CLOUD';
 export type CombineIdeaOutcome = 'PENDING' | 'HIT' | 'SO_SO' | 'BORED_REPLACED';
 
 export interface CombineActivitySuggestion {
@@ -531,6 +531,7 @@ export interface CombineHistoryCard {
 /* ---------- Imperative App «Chrono Cloud · Daily Character Notes & Timeline» View Models ---------- */
 
 export type CloudItemType = 'thought' | 'proposal' | 'action';
+export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'GM_ONLY';
 
 export interface CloudDayNote {
   id: string;
@@ -550,6 +551,15 @@ export interface CloudDayNote {
   votesCount: number;
   moodEmoji?: string;
   createdAt: string;
+
+  /* Hybrid Model fields: Player ownership, pins & cloud syncing */
+  authorProfileId?: string;
+  authorProfileName?: string;
+  visibility?: NoteVisibility;
+  isPinnedToHero?: boolean;
+  isPinnedToCloud?: boolean;
+  forkedFromNoteId?: string;
+  forkedFromAuthorName?: string;
 }
 
 export interface CloudDateTab {
