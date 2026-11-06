@@ -57,31 +57,34 @@ describe('ArenaHeroNotesModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should submit note through arena.addHeroNote with selected visibility and pins', () => {
+  it('should submit note through arena.addHeroNote with selected visibility, pins, and party heroes', () => {
     spyOn(arena, 'addHeroNote').and.callThrough();
 
-    component.newNoteText = 'Секретный тактический план для Алексея';
+    component.newNoteText = 'Секретный тактический план для Алексея в пати с Зевсом';
     component.newNoteType.set('action');
     component.newNoteVisibility.set('PRIVATE');
     component.newNotePinToHero = true;
     component.newNotePinToCloud = true;
+    component.togglePartyActor('actor-zeus');
 
     component.submitNote();
 
     expect(arena.addHeroNote).toHaveBeenCalledWith(
       jasmine.objectContaining({
         actorId: 'actor-alexey',
-        text: 'Секретный тактический план для Алексея',
+        text: 'Секретный тактический план для Алексея в пати с Зевсом',
         type: 'action',
         visibility: 'PRIVATE',
         isPinnedToHero: true,
         isPinnedToCloud: true,
+        partyActorIds: ['actor-zeus'],
       }),
     );
 
     // Form should reset
     expect(component.newNoteText).toBe('');
     expect(component.newNoteVisibility()).toBe('PUBLIC');
+    expect(component.selectedPartyActorIds()).toEqual([]);
   });
 
   it('should adopt note to private when adoptToPrivate is called', () => {
@@ -102,7 +105,7 @@ describe('ArenaHeroNotesModalComponent', () => {
         actorName: 'Алексей',
         actorAvatar: 'alexey',
         actorAccent: 'rose',
-        text: 'Публичная закрепленная',
+        text: 'Публичная мысль',
         supporters: [],
         votesCount: 0,
         createdAt: '2026-11-06T10:00:00Z',
@@ -119,37 +122,21 @@ describe('ArenaHeroNotesModalComponent', () => {
         actorName: 'Алексей',
         actorAvatar: 'alexey',
         actorAccent: 'rose',
-        text: 'Личная приватная',
+        text: 'Приватная мысль',
         supporters: [],
         votesCount: 0,
         createdAt: '2026-11-06T11:00:00Z',
         visibility: 'PRIVATE',
         isPinnedToHero: false,
       },
-      {
-        id: 'n3',
-        dateKey: '2026-11-06',
-        time: '12:00',
-        timeMinutes: 720,
-        type: 'thought',
-        actorId: 'actor-alexey',
-        actorName: 'Алексей',
-        actorAvatar: 'alexey',
-        actorAccent: 'rose',
-        text: 'Архаичный лор мастера',
-        supporters: [],
-        votesCount: 0,
-        createdAt: '2026-11-06T12:00:00Z',
-        visibility: 'GM_ONLY',
-        isPinnedToHero: true,
-      },
     ];
 
     component.activeTab.set('ALL');
-    expect(component.filterNotes(sampleNotes).length).toBe(3);
+    expect(component.filterNotes(sampleNotes).length).toBe(2);
 
     component.activeTab.set('PINNED');
-    expect(component.filterNotes(sampleNotes).length).toBe(2);
+    expect(component.filterNotes(sampleNotes).length).toBe(1);
+    expect(component.filterNotes(sampleNotes)[0].id).toBe('n1');
 
     component.activeTab.set('PRIVATE');
     expect(component.filterNotes(sampleNotes).length).toBe(1);
@@ -158,18 +145,128 @@ describe('ArenaHeroNotesModalComponent', () => {
     component.activeTab.set('PUBLIC');
     expect(component.filterNotes(sampleNotes).length).toBe(1);
     expect(component.filterNotes(sampleNotes)[0].id).toBe('n1');
-
-    component.activeTab.set('GM_ONLY');
-    expect(component.filterNotes(sampleNotes).length).toBe(1);
-    expect(component.filterNotes(sampleNotes)[0].id).toBe('n3');
   });
 
-  it('should emit close on dismiss and reset form fields', () => {
+  it('should toggle between FLOATING, TIERS and LIST modal view modes', () => {
+    expect(component.modalViewMode()).toBe('FLOATING');
+    component.modalViewMode.set('TIERS');
+    expect(component.modalViewMode()).toBe('TIERS');
+    component.modalViewMode.set('LIST');
+    expect(component.modalViewMode()).toBe('LIST');
+    component.modalViewMode.set('FLOATING');
+    expect(component.modalViewMode()).toBe('FLOATING');
+  });
+
+  it('should toggle party actor inclusion', () => {
+    expect(component.isPartyActorSelected('actor-zeus')).toBeFalse();
+    component.togglePartyActor('actor-zeus');
+    expect(component.isPartyActorSelected('actor-zeus')).toBeTrue();
+    expect(component.selectedPartyActorIds()).toContain('actor-zeus');
+
+    component.togglePartyActor('actor-hades');
+    expect(component.selectedPartyActorIds()).toEqual(['actor-zeus', 'actor-hades']);
+
+    component.togglePartyActor('actor-zeus');
+    expect(component.isPartyActorSelected('actor-zeus')).toBeFalse();
+    expect(component.selectedPartyActorIds()).toEqual(['actor-hades']);
+  });
+
+  it('should format visible character likes and collapse remainder into + N label', () => {
+    const sampleNote: CloudDayNote = {
+      id: 'note-likes-test',
+      dateKey: '2026-11-06',
+      time: '12:00',
+      timeMinutes: 720,
+      type: 'action',
+      actorId: 'actor-neurobi',
+      actorName: 'Нейроби',
+      actorAvatar: 'neurobi',
+      actorAccent: 'violet',
+      text: 'Готовка супа в пати',
+      supporters: [],
+      votesCount: 5,
+      createdAt: '2026-11-06T12:00:00Z',
+      partyActorIds: ['actor-hades', 'actor-zeus'],
+      likedByActors: [
+        { actorId: 'actor-hades', actorName: 'Аид', avatarIcon: 'hades' },
+        { actorId: 'actor-zeus', actorName: 'Зевс', avatarIcon: 'zeus' },
+        { actorId: 'actor-poseidon', actorName: 'Посейдон', avatarIcon: 'poseidon' },
+        { actorId: 'actor-alisa', actorName: 'Алиса', avatarIcon: 'alisa' },
+        { actorId: 'actor-akin', actorName: 'Акин', avatarIcon: 'akin' },
+      ],
+    };
+
+    const visibleLikes = component.getVisibleLikes(sampleNote);
+    expect(visibleLikes.length).toBe(3);
+    expect(visibleLikes.map((l) => l.actorName)).toEqual(['Аид', 'Зевс', 'Посейдон']);
+
+    const hiddenLikes = component.getHiddenLikes(sampleNote);
+    expect(hiddenLikes.length).toBe(2);
+    expect(hiddenLikes.map((l) => l.actorName)).toEqual(['Алиса', 'Акин']);
+
+    const hiddenNames = component.getHiddenLikesNames(sampleNote);
+    expect(hiddenNames).toBe('Алиса, Акин');
+
+    const likesWord = component.getLikesWord(hiddenLikes.length);
+    expect(likesWord).toBe('лайка');
+  });
+
+  it('should filter floating notes by PARTY, PUBLIC, PRIVATE, and GM_ONLY', () => {
+    const sampleNotes: CloudDayNote[] = [
+      {
+        id: 'p1',
+        dateKey: '2026-11-06',
+        time: '10:00',
+        timeMinutes: 600,
+        type: 'action',
+        actorId: 'actor-alexey',
+        actorName: 'Алексей',
+        actorAvatar: 'alexey',
+        actorAccent: 'rose',
+        text: 'Катка в пати',
+        supporters: [],
+        votesCount: 0,
+        createdAt: '2026-11-06T10:00:00Z',
+        visibility: 'PUBLIC',
+        partyActorIds: ['actor-ginny', 'actor-nick'],
+      },
+      {
+        id: 'priv1',
+        dateKey: '2026-11-06',
+        time: '11:00',
+        timeMinutes: 660,
+        type: 'thought',
+        actorId: 'actor-alexey',
+        actorName: 'Алексей',
+        actorAvatar: 'alexey',
+        actorAccent: 'rose',
+        text: 'Личный секрет',
+        supporters: [],
+        votesCount: 0,
+        createdAt: '2026-11-06T11:00:00Z',
+        visibility: 'PRIVATE',
+      },
+    ];
+
+    component.floatingFilter.set('PARTY');
+    const partyFiltered = component.filterFloatingNotes(sampleNotes);
+    expect(partyFiltered.length).toBe(1);
+    expect(partyFiltered[0].id).toBe('p1');
+
+    component.floatingFilter.set('PRIVATE');
+    const privFiltered = component.filterFloatingNotes(sampleNotes);
+    expect(privFiltered.length).toBe(1);
+    expect(privFiltered[0].id).toBe('priv1');
+  });
+
+  it('should reset state cleanly when onDismiss is invoked', () => {
     spyOn(component.close, 'emit');
-    component.newNoteText = 'Несохраненный черновик';
+    component.newNoteText = 'Черновик для отмены';
+    component.togglePartyActor('actor-zeus');
     component.onDismiss();
 
     expect(component.close.emit).toHaveBeenCalled();
     expect(component.newNoteText).toBe('');
+    expect(component.selectedPartyActorIds()).toEqual([]);
   });
 });

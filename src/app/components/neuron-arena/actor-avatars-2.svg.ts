@@ -256,6 +256,75 @@ export const ACTOR_AVATARS_PART_2: Record<string, string> = {
     <circle cx="59" cy="50" r="3.2" fill="#0f172a" />
     <path d="M41 61 Q50 68 60 59" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round" />
   `,
+
+  // 31. НЕЙРОБИ (Neurobi: олицетворение внутреннего мира Алексея, уютный синаптический нимб, фиолетово-индиго свечение, золотые искры)
+  neurobi: `
+    <rect width="100" height="100" rx="22" fill="#2e1065" />
+    <circle cx="50" cy="50" r="42" fill="#581c87" opacity="0.4" />
+    <path d="M22 28 Q36 18 50 25 T78 22" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.6" stroke-dasharray="2 3" />
+    <path d="M18 55 Q32 45 48 58 T82 50" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.5" />
+    <circle cx="22" cy="28" r="3" fill="#fbbf24" />
+    <circle cx="50" cy="25" r="3.5" fill="#38bdf8" />
+    <circle cx="78" cy="22" r="3" fill="#e879f9" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#3b0764" />
+    <path d="M30 76 Q50 86 70 76" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round" />
+    <rect x="31" y="32" width="38" height="42" rx="17" fill="#fed7aa" />
+    <path d="M28 42 C28 20, 72 20, 72 42 C64 28, 36 28, 28 42 Z" fill="#6b21a8" />
+    <circle cx="50" cy="26" r="6" fill="#a855f7" opacity="0.7" />
+    <ellipse cx="41" cy="50" rx="3.5" ry="4" fill="#1e1b4b" />
+    <ellipse cx="59" cy="50" rx="3.5" ry="4" fill="#1e1b4b" />
+    <circle cx="42" cy="49" r="1.2" fill="#ffffff" />
+    <circle cx="60" cy="49" r="1.2" fill="#ffffff" />
+    <ellipse cx="36" cy="57" rx="3" ry="1.8" fill="#f43f5e" opacity="0.4" />
+    <ellipse cx="64" cy="57" rx="3" ry="1.8" fill="#f43f5e" opacity="0.4" />
+    <path d="M42 62 Q50 68 58 62" fill="none" stroke="#7e22ce" stroke-width="3" stroke-linecap="round" />
+    <polygon points="50,33 52,38 57,40 52,42 50,47 48,42 43,40 48,38" fill="#fbbf24" />
+  `,
+
+  // 32. ТИМЛИД СТАРЛИДЕР (StarLeader: Лидер Lemon Seasons, звездная золотая корона/визор, янтарное сияние, гарнитура, решительный взгляд)
+  starleader: `
+    <rect width="100" height="100" rx="22" fill="#451a03" />
+    <circle cx="50" cy="50" r="42" fill="#78350f" opacity="0.5" />
+    <circle cx="50" cy="22" r="14" fill="#fef08a" opacity="0.2" />
+    <polygon points="50,6 54,16 64,18 56,25 58,35 50,30 42,35 44,25 36,18 46,16" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#1c1917" />
+    <path d="M34 76 L50 94 L66 76" fill="#f59e0b" />
+    <polygon points="50,86 46,94 54,94" fill="#fef08a" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fed7aa" />
+    <path d="M28 38 C30 20, 70 20, 72 38 C64 30, 36 30, 28 38 Z" fill="#292524" />
+    <path d="M32 30 Q50 18 68 28" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
+    <path d="M27 46 Q26 62 38 66" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="39" cy="66" r="3" fill="#0284c7" />
+    <circle cx="27" cy="46" r="4.5" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+    <circle cx="41" cy="49" r="3.2" fill="#0f172a" />
+    <circle cx="59" cy="49" r="3.2" fill="#0f172a" />
+    <circle cx="42" cy="48" r="1.2" fill="#ffffff" />
+    <circle cx="60" cy="48" r="1.2" fill="#ffffff" />
+    <path d="M36 43 L46 44" stroke="#451a03" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M64 43 L54 44" stroke="#451a03" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M42 61 Q50 68 58 61" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round" />
+  `,
+
+  // 33. ПРОГРАММИСТ ИЗ ЛЕМОН ТИМ (Lemon Coder: худи лимонного цвета с логотипом, наушники разработчика, стильные очки, код)
+  'lemon-coder': `
+    <rect width="100" height="100" rx="22" fill="#064e3b" />
+    <circle cx="50" cy="50" r="40" fill="#047857" opacity="0.3" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#eab308" />
+    <path d="M34 78 Q50 90 66 78" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" />
+    <circle cx="50" cy="89" r="6" fill="#fef08a" stroke="#a16207" stroke-width="1.5" />
+    <path d="M50 84 L50 94 M45 89 L55 89" stroke="#ca8a04" stroke-width="1.2" />
+    <path d="M26 48 C26 22, 74 22, 74 48" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />
+    <rect x="23" y="44" width="7" height="14" rx="3" fill="#10b981" />
+    <rect x="70" y="44" width="7" height="14" rx="3" fill="#10b981" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fdba74" />
+    <path d="M29 38 C32 24, 68 24, 71 38 Z" fill="#1e293b" />
+    <rect x="34" y="44" width="13" height="10" rx="3" fill="#ecfdf5" stroke="#065f46" stroke-width="2" />
+    <rect x="53" y="44" width="13" height="10" rx="3" fill="#ecfdf5" stroke="#065f46" stroke-width="2" />
+    <line x1="47" y1="48" x2="53" y2="48" stroke="#065f46" stroke-width="2" />
+    <circle cx="40.5" cy="49" r="2.2" fill="#0f172a" />
+    <circle cx="59.5" cy="49" r="2.2" fill="#0f172a" />
+    <path d="M42 62 Q50 67 58 62" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round" />
+  `,
 };
 
 export const DEFAULT_ACTOR_AVATAR_SVG = `

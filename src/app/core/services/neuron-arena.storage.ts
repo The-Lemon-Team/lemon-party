@@ -5,7 +5,7 @@ import {
 } from '../models/flow.models';
 import { ArenaStateStore, createEmptyArenaStore } from './neuron-arena.helpers';
 
-const STORAGE_KEY_PREFIX = 'lemon-actions:neuron-arena:v5:';
+const STORAGE_KEY_PREFIX = 'lemon-actions:neuron-arena:v6:';
 
 export const arenaStorageKey = (profileId: string): string => `${STORAGE_KEY_PREFIX}${profileId}`;
 

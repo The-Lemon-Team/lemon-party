@@ -533,6 +533,14 @@ export interface CombineHistoryCard {
 export type CloudItemType = 'thought' | 'proposal' | 'action';
 export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'GM_ONLY';
 
+export interface NoteActorLike {
+  actorId: string;
+  actorName: string;
+  avatarIcon?: string;
+  moodEmoji?: string;
+  accentColor?: ArenaAccentColor;
+}
+
 export interface CloudDayNote {
   id: string;
   dateKey: string;
@@ -560,6 +568,13 @@ export interface CloudDayNote {
   isPinnedToCloud?: boolean;
   forkedFromNoteId?: string;
   forkedFromAuthorName?: string;
+
+  /* Party Synergy & Character Likes */
+  partyActorIds?: string[];
+  partyActorNames?: string[];
+  likedByActors?: NoteActorLike[];
+  floatingTilt?: number;
+  floatingDelay?: number;
 }
 
 export interface CloudDateTab {

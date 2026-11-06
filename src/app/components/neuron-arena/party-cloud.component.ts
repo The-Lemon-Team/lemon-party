@@ -15,6 +15,7 @@ import { NeuronArenaService } from '../../core/services/neuron-arena.service';
 import { PartyRealtimeService } from '../../core/services/party-realtime.service';
 import { PartySoundService } from '../../party-game/party-sound.service';
 import { ActorAvatarComponent } from './actor-avatar.component';
+import { ArenaHeroNotesModalComponent } from './arena-hero-notes-modal.component';
 import { getAccentAvatarClasses, getAccentPillClasses } from './arena-ui.utils';
 
 export type CloudViewMode = 'CLOUD_TIMELINE' | 'DAY_FEED' | 'ORBIT' | 'CALENDAR_TIMELINE';
@@ -110,179 +111,128 @@ export const CLOUD_DAY_VIBES: CloudDayVibe[] = [
   },
 ];
 
-const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v3';
+const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v6';
 
 const SEED_NOTES: Record<string, CloudDayNote[]> = {
   '2026-11-06': [
     {
-      id: 'note-today-1',
+      id: 'note-today-ginny-overwatch',
       dateKey: '2026-11-06',
-      time: '08:30',
-      timeMinutes: 510,
-      type: 'thought',
-      actorId: 'actor-owl-detective',
-      actorName: 'Детектив Сова',
-      actorAvatar: 'owl',
-      actorAccent: 'indigo',
-      actorTitle: 'Аналитик Внимания',
-      text: 'Утренний эспрессо готов. Сегодня нужно разгадать главный парадокс дня и найти баланс!',
-      supporters: ['actor-dr-cerebro', 'actor-eva-ai'],
-      votesCount: 3,
-      moodEmoji: '☕',
-      createdAt: '2026-11-06T08:30:00Z',
-    },
-    {
-      id: 'note-today-2',
-      dateKey: '2026-11-06',
-      time: '10:15',
-      timeMinutes: 615,
-      type: 'proposal',
-      actorId: 'actor-kot-rebel',
-      actorName: 'Бунтарь Кот',
-      actorAvatar: 'kot-rebel',
-      actorAccent: 'amber',
-      actorTitle: 'Магистр Спонтанности',
-      text: 'Предлагаю на обед заказать пиццу с пепперони и двойным сыром. Никаких диет в пятницу!',
-      supporters: ['actor-ratatouille', 'actor-alexey', 'actor-misha'],
-      votesCount: 4,
-      moodEmoji: '🍕',
-      createdAt: '2026-11-06T10:15:00Z',
-    },
-    {
-      id: 'note-today-3',
-      dateKey: '2026-11-06',
-      time: '12:45',
-      timeMinutes: 765,
-      type: 'thought',
-      actorId: 'actor-dr-cerebro',
-      actorName: 'Доктор Церебро',
-      actorAvatar: 'cerebro',
-      actorAccent: 'cyan',
-      actorTitle: 'Кибернетик',
-      text: 'Нейросети показывают 94% вероятность успешного завершения всех задач до 18:00.',
-      supporters: ['actor-eva-ai'],
-      votesCount: 2,
-      moodEmoji: '🧠',
-      createdAt: '2026-11-06T12:45:00Z',
-    },
-    {
-      id: 'note-today-4',
-      dateKey: '2026-11-06',
-      time: '14:20',
-      timeMinutes: 860,
+      time: '18:30',
+      timeMinutes: 1110,
       type: 'action',
-      actorId: 'actor-kapitan-zaryad',
-      actorName: 'Капитан Заряд',
-      actorAvatar: 'kapitan',
+      actorId: 'actor-ginny',
+      actorName: 'Джинни',
+      actorAvatar: 'ginny',
       actorAccent: 'emerald',
-      actorTitle: 'Энергетический Коуч',
-      text: 'Пятиминутка бодрости! Сделал 50 отжиманий и выпил имбирный смузи. Кто со мной?',
-      supporters: ['actor-viking-bjorn'],
-      votesCount: 2,
-      moodEmoji: '⚡',
-      createdAt: '2026-11-06T14:20:00Z',
+      actorTitle: 'Любительница Overwatch & Искренний Друг',
+      text: 'overwatch 18:30 - 20:30',
+      supporters: ['actor-alexey', 'actor-neurobi'],
+      votesCount: 4,
+      moodEmoji: '🎮',
+      createdAt: '2026-11-06T18:30:00Z',
     },
     {
-      id: 'note-today-cluster-1',
+      id: 'note-today-neurobi-soup-hades',
       dateKey: '2026-11-06',
-      time: '15:58',
-      timeMinutes: 958,
-      type: 'proposal',
-      actorId: 'actor-zeus',
-      actorName: 'Зевс',
-      actorAvatar: 'zeus',
-      actorAccent: 'amber',
-      actorTitle: 'Громовержец & Лидер',
-      text: 'Заказать пиццу с пепперони и двойным сыром к вечерней игре!',
-      supporters: ['actor-alexey', 'actor-solomon'],
-      votesCount: 3,
-      moodEmoji: '🍕',
-      createdAt: '2026-11-06T15:58:00Z',
-    },
-    {
-      id: 'note-today-cluster-2',
-      dateKey: '2026-11-06',
-      time: '15:58',
-      timeMinutes: 958,
-      type: 'thought',
-      actorId: 'actor-zeus',
-      actorName: 'Зевс',
-      actorAvatar: 'zeus',
-      actorAccent: 'amber',
-      actorTitle: 'Громовержец & Лидер',
-      text: 'И лимонад со льдом, пятничный настрой должен быть на максимуме.',
-      supporters: ['actor-misha'],
-      votesCount: 2,
-      moodEmoji: '🥤',
-      createdAt: '2026-11-06T15:58:30Z',
-    },
-    {
-      id: 'note-today-cluster-3',
-      dateKey: '2026-11-06',
-      time: '16:15',
-      timeMinutes: 975,
+      time: '20:30',
+      timeMinutes: 1230,
       type: 'action',
-      actorId: 'actor-solomon',
-      actorName: 'Мудрец Соломон',
-      actorAvatar: 'solomon',
+      actorId: 'actor-neurobi',
+      actorName: 'Нейроби',
+      actorAvatar: 'neurobi',
       actorAccent: 'violet',
-      actorTitle: 'Хранитель Баланса',
-      text: 'Заказ пиццы утвержден! Курьер прибудет к 17:00.',
-      supporters: ['actor-zeus', 'actor-kot-rebel'],
-      votesCount: 4,
-      moodEmoji: '📦',
-      createdAt: '2026-11-06T16:15:00Z',
+      actorTitle: 'Внутренний Мир Главного Персонажа',
+      text: 'готовка супа 20:30, 21:30. В пати с аидом.',
+      supporters: ['actor-hades', 'actor-alexey', 'actor-baron'],
+      votesCount: 6,
+      moodEmoji: '🍲',
+      createdAt: '2026-11-06T20:30:00Z',
     },
     {
-      id: 'note-today-5',
-      dateKey: '2026-11-06',
-      time: '17:00',
-      timeMinutes: 1020,
-      type: 'proposal',
-      actorId: 'actor-solomon',
-      actorName: 'Мудрец Соломон',
-      actorAvatar: 'solomon',
-      actorAccent: 'violet',
-      actorTitle: 'Хранитель Баланса',
-      text: 'Предлагаю собраться за круглым столом в 19:30 и сыграть в настольные стратегии.',
-      supporters: ['actor-alexey', 'actor-misha', 'actor-baker-croissant'],
-      votesCount: 4,
-      moodEmoji: '🎲',
-      createdAt: '2026-11-06T17:00:00Z',
-    },
-    {
-      id: 'note-today-6',
-      dateKey: '2026-11-06',
-      time: '19:45',
-      timeMinutes: 1185,
-      type: 'thought',
-      actorId: 'actor-alexey',
-      actorName: 'Алексей (в халате)',
-      actorAvatar: 'alexey',
-      actorAccent: 'rose',
-      actorTitle: 'Архитектор Уюта',
-      text: 'Халат надет, чай заварен, уют максимальный. Пятничный вечер обещает быть душевным.',
-      supporters: ['actor-kot-rebel', 'actor-fairy-home'],
-      votesCount: 3,
-      moodEmoji: '🛋️',
-      createdAt: '2026-11-06T19:45:00Z',
-    },
-    {
-      id: 'note-today-7',
+      id: 'note-today-neurobi-soup-finish',
       dateKey: '2026-11-06',
       time: '21:30',
       timeMinutes: 1290,
       type: 'action',
-      actorId: 'actor-dj-pixel',
-      actorName: 'DJ Pixel',
-      actorAvatar: 'pixel',
+      actorId: 'actor-neurobi',
+      actorName: 'Нейроби',
+      actorAvatar: 'neurobi',
       actorAccent: 'violet',
-      actorTitle: 'Синтезатор Атмосферы',
-      text: 'Запустил вечерний сет чилл-хопа и синтвейва на колонках в общем зале. Звук пошёл!',
-      supporters: ['actor-cyber-ninja', 'actor-kot-rebel'],
-      votesCount: 3,
-      moodEmoji: '🎧',
+      actorTitle: 'Внутренний Мир Главного Персонажа',
+      text: 'готовка супа 21:30 — финальный наваристый бульон готов! В пати с Аидом сняли пробу.',
+      supporters: ['actor-hades', 'actor-alexey'],
+      votesCount: 5,
+      moodEmoji: '🥣',
       createdAt: '2026-11-06T21:30:00Z',
+    },
+    {
+      id: 'note-today-ginny-nick-overwatch',
+      dateKey: '2026-11-06',
+      time: '22:02',
+      timeMinutes: 1322,
+      type: 'action',
+      actorId: 'actor-ginny',
+      actorName: 'Джинни',
+      actorAvatar: 'ginny',
+      actorAccent: 'emerald',
+      actorTitle: 'Любительница Overwatch & Искренний Друг',
+      text: 'Пиво + Овервотч - Джинни, Ник',
+      supporters: ['actor-nick', 'actor-alexey', 'actor-baron'],
+      votesCount: 6,
+      moodEmoji: '🍺',
+      createdAt: '2026-11-06T22:02:00Z',
+    },
+    {
+      id: 'note-today-nick-overwatch',
+      dateKey: '2026-11-06',
+      time: '22:02',
+      timeMinutes: 1322,
+      type: 'action',
+      actorId: 'actor-nick',
+      actorName: 'Ник',
+      actorAvatar: 'nick',
+      actorAccent: 'rose',
+      actorTitle: 'Теневой Протагонист & Снайпер Overwatch',
+      text: 'Пиво + Овервотч — заходим в рейтинговый матч в пати с Джинни. Снайпер на позиции!',
+      supporters: ['actor-ginny', 'actor-alexey'],
+      votesCount: 5,
+      moodEmoji: '🎮',
+      createdAt: '2026-11-06T22:02:15Z',
+    },
+    {
+      id: 'note-today-starleader-coding-session',
+      dateKey: '2026-11-06',
+      time: '22:02',
+      timeMinutes: 1322,
+      type: 'proposal',
+      actorId: 'actor-starleader',
+      actorName: 'ТимЛид Старлидер',
+      actorAvatar: 'starleader',
+      actorAccent: 'amber',
+      actorTitle: 'Технический Лидер & Архитектор Lemon Seasons',
+      text: 'Коддинг Сессия - Программист из Лемон тим, Новый персонаж ТимЛид Старлидер. Работа над наполнение Lemon Seasons.',
+      supporters: ['actor-lemon-coder', 'actor-alexey', 'actor-professor'],
+      votesCount: 7,
+      moodEmoji: '🍋',
+      createdAt: '2026-11-06T22:02:30Z',
+    },
+    {
+      id: 'note-today-lemon-coder-session',
+      dateKey: '2026-11-06',
+      time: '22:02',
+      timeMinutes: 1322,
+      type: 'action',
+      actorId: 'actor-lemon-coder',
+      actorName: 'Программист (Lemon Team)',
+      actorAvatar: 'lemon-coder',
+      actorAccent: 'cyan',
+      actorTitle: 'Fullstack Инженер & Кодер Lemon Party',
+      text: 'Коддинг Сессия Lemon Seasons — пушим компоненты и связываем логику сезонов вместе со Старлидером!',
+      supporters: ['actor-starleader', 'actor-alexey'],
+      votesCount: 6,
+      moodEmoji: '💻',
+      createdAt: '2026-11-06T22:02:45Z',
     },
   ],
   '2026-11-05': [
@@ -404,6 +354,7 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
     RouterLink,
     ActorAvatarComponent,
     ModalOverlayDirective,
+    ArenaHeroNotesModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
@@ -622,6 +573,97 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
             <span>Кликните по таймлайну внизу для выбора часа</span>
           </div>
         </div>
+
+        <!-- CHARACTER FOCUS STRIP: QUICK SELECT HERO OR OPEN PERSONAL 3-TIER WORKSPACE -->
+        <div class="flex items-center gap-2 pt-2.5 border-t border-outline-variant/15 overflow-x-auto py-1">
+          <span class="font-label-ui text-xs font-bold text-on-surface-variant uppercase tracking-wider flex-shrink-0 flex items-center gap-1">
+            <span class="material-symbols-rounded text-sm text-primary">person_search</span>
+            <span>Герой в облаке:</span>
+          </span>
+
+          <button
+            type="button"
+            (click)="selectActorFilter(null)"
+            class="px-3 py-1 rounded-xl text-xs font-label-ui font-bold border transition-all flex-shrink-0 cursor-pointer"
+            [class]="
+              selectedActorFilter() === null
+                ? 'bg-primary text-on-primary border-primary shadow-xs'
+                : 'bg-surface-container-low text-on-surface-variant hover:text-on-surface border-outline-variant/30'
+            "
+          >
+            Все герои ({{ allActors().length }})
+          </button>
+
+          @for (actor of allActors(); track actor.id) {
+            <button
+              type="button"
+              (click)="selectActorFilter(actor.id)"
+              class="px-2.5 py-1 rounded-xl text-xs font-label-ui font-semibold border transition-all inline-flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+              [class]="
+                selectedActorFilter() === actor.id
+                  ? 'bg-primary text-on-primary border-primary shadow-xs font-bold'
+                  : 'bg-surface-container-low text-on-surface-variant hover:text-on-surface border-outline-variant/30 hover:bg-surface-container'
+              "
+            >
+              <app-actor-avatar [avatar]="actor.avatarIcon" containerClass="w-4 h-4 rounded-full flex-shrink-0" />
+              <span>{{ actor.name }}</span>
+              @if (getActorNotesCountForDate(actor.id); as aCount) {
+                @if (aCount > 0) {
+                  <span
+                    class="text-[9px] px-1.5 py-0.2 rounded-full font-mono"
+                    [class]="selectedActorFilter() === actor.id ? 'bg-on-primary/25 text-on-primary' : 'bg-surface-container-highest text-primary font-bold'"
+                  >
+                    {{ aCount }}
+                  </span>
+                }
+              }
+            </button>
+          }
+        </div>
+
+        <!-- FOCUSED CHARACTER CLOUD WORKSPACE CALLOUT BANNER -->
+        @if (filteredActor(); as fActor) {
+          <div class="p-3 rounded-2xl bg-primary-container/20 border border-primary/30 flex items-center justify-between gap-3 flex-wrap">
+            <div class="flex items-center gap-3 min-w-0">
+              <app-actor-avatar [avatar]="fActor.avatarIcon" containerClass="w-10 h-10 rounded-2xl shadow-xs ring-2 ring-primary/40 flex-shrink-0" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-headline-sm text-sm font-bold text-on-surface truncate">
+                    Фокус облака: {{ fActor.name }}
+                  </h3>
+                  <span class="font-label-code-sm text-[10px] px-2 py-0.5 rounded-full font-bold uppercase" [class]="getAccentPillClasses(fActor.accentColor)">
+                    {{ fActor.categoryLabel }}
+                  </span>
+                </div>
+                <p class="font-body-sm text-[11px] text-on-surface-variant truncate">
+                  Показаны мысли героя. Вы можете открыть персональный Workspace героя с 3 уровнями (Public, Private, Архаичный лор).
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="openCharacterWorkspace(fActor)"
+                class="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-label-ui text-xs font-bold shadow-xs hover:opacity-95 transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                title="Открыть персональный Workspace героя (3 уровня: Public, Private, Архаичный лор)"
+              >
+                <span class="material-symbols-rounded text-sm">cloud</span>
+                <span>☁️ Открыть Workspace героя</span>
+              </button>
+
+              <button
+                type="button"
+                (click)="selectActorFilter(null)"
+                class="px-2.5 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-ui text-xs transition-colors inline-flex items-center gap-1 cursor-pointer"
+                title="Сбросить фильтр и показать всех персонажей"
+              >
+                <span class="material-symbols-rounded text-sm">close</span>
+                <span>Все</span>
+              </button>
+            </div>
+          </div>
+        }
       </section>
 
       <!-- 3. MAIN CARTOON CLOUD STAGE (STATIC CONTAINER, BOTTOM TIMELINE WITH CANDLESTICK COLUMNS) -->
@@ -1456,13 +1498,35 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
               </p>
             </div>
 
+            <!-- Party Synergy Strip (if present) -->
+            @if (note.partyActorIds && note.partyActorIds.length > 0) {
+              <div class="flex items-center gap-2 p-2.5 rounded-xl bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/30 text-xs font-label-ui text-amber-900 dark:text-amber-200">
+                <span class="text-sm">👥</span>
+                <span class="font-bold">В пати с:</span>
+                <span class="font-label-code-sm font-bold">{{ getPartyNames(note) }}</span>
+              </div>
+            }
+
             <!-- Supporters & Likes Strip -->
             <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-high/60 border border-outline-variant/25 flex-wrap gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold font-label-ui text-on-surface">Поддержка мысли:</span>
-                <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  ❤️ {{ note.votesCount }}
-                </span>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-bold font-label-ui text-on-surface">Оценили:</span>
+                @for (like of getVisibleLikes(note); track like.actorId) {
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface text-[10px] font-label-code-sm shadow-2xs border border-outline-variant/25">
+                    <app-actor-avatar [avatar]="like.avatarIcon || 'person'" containerClass="w-3.5 h-3.5 rounded-full flex-shrink-0" />
+                    <span class="font-bold">{{ like.actorName }}</span>
+                  </span>
+                }
+                @if (getHiddenLikes(note).length > 0) {
+                  <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-code-sm text-[10px] font-bold border border-primary/25">
+                    +{{ getHiddenLikes(note).length }} {{ getLikesWord(getHiddenLikes(note).length) }} ({{ getHiddenLikesNames(note) }})
+                  </span>
+                }
+                @if (!note.likedByActors?.length) {
+                  <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    ❤️ {{ note.votesCount }}
+                  </span>
+                }
               </div>
               <button
                 type="button"
@@ -1535,6 +1599,16 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
                 >
                   <span class="material-symbols-rounded text-sm">cloud</span>
                   <span>{{ note.isPinnedToCloud ? 'В облаках ☁️' : '☁️ В облака' }}</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="openWorkspaceFromInspectedNote()"
+                  class="px-2.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary hover:text-on-primary text-primary font-label-ui text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer"
+                  title="Открыть персональный Workspace героя с 3 уровнями (Public, Private, Архаичный лор)"
+                >
+                  <span class="material-symbols-rounded text-sm">cloud</span>
+                  <span>Workspace героя</span>
                 </button>
 
                 <button
@@ -1642,6 +1716,13 @@ const SEED_NOTES: Record<string, CloudDayNote[]> = {
           </div>
         </div>
       }
+
+      <!-- HERO NOTES & CHARACTER CLOUD WORKSPACE MODAL -->
+      <app-arena-hero-notes-modal
+        [actor]="selectedActorForWorkspace()"
+        [isOpen]="selectedActorForWorkspace() !== null"
+        (close)="selectedActorForWorkspace.set(null)"
+      />
     </div>
   `,
 })
@@ -1674,13 +1755,30 @@ export class PartyCloudComponent {
   // Input states for new thought/proposal/action
   readonly selectedActionType = signal<CloudItemType>('thought');
   readonly newNoteTime = signal<string>(this.getCurrentTimeString());
+  readonly isTimeCustomized = signal<boolean>(false);
+  readonly isTimePickerModalOpen = signal<boolean>(false);
+  readonly modalDraftTime = signal<string>(this.getCurrentTimeString());
   readonly newIdeaTitle = signal<string>('');
+
+  readonly isModalTimeNow = computed(() => {
+    return this.modalDraftTime() === this.currentTimeString();
+  });
 
   // Active Roleplay Character & Actors signals
   readonly allActors = signal<ArenaActorCard[]>([]);
   readonly quickActors = computed(() => this.allActors().slice(0, 7));
   readonly activePitchActor = signal<ArenaActorCard | null>(null);
   readonly isCharacterPickerOpen = signal<boolean>(false);
+
+  // Character Focus in Cloud & Personal Workspace
+  readonly selectedActorFilter = signal<string | null>(null);
+  readonly selectedActorForWorkspace = signal<ArenaActorCard | null>(null);
+
+  readonly filteredActor = computed<ArenaActorCard | null>(() => {
+    const id = this.selectedActorFilter();
+    if (!id) return null;
+    return this.allActors().find((a) => a.id === id) ?? null;
+  });
 
   // Inspector & Space Creation
   readonly inspectedNote = signal<CloudDayNote | null>(null);
@@ -1776,7 +1874,11 @@ export class PartyCloudComponent {
   });
 
   readonly visibleNotes = computed<CloudDayNote[]>(() => {
-    const notes = this.activeDateNotes();
+    let notes = this.activeDateNotes();
+    const actorId = this.selectedActorFilter();
+    if (actorId) {
+      notes = notes.filter((n) => n.actorId === actorId);
+    }
     const layer = this.activeLayer();
     if (layer === 'ALL') return notes;
     if (layer === 'THOUGHTS') return notes.filter((n) => n.type === 'thought');
@@ -2123,6 +2225,34 @@ export class PartyCloudComponent {
     });
   }
 
+  getVisibleLikes(note: CloudDayNote) {
+    return note.likedByActors ? note.likedByActors.slice(0, 3) : [];
+  }
+
+  getHiddenLikes(note: CloudDayNote) {
+    return note.likedByActors && note.likedByActors.length > 3
+      ? note.likedByActors.slice(3)
+      : [];
+  }
+
+  getHiddenLikesNames(note: CloudDayNote): string {
+    const hidden = this.getHiddenLikes(note);
+    return hidden.map((l) => l.actorName).join(', ');
+  }
+
+  getLikesWord(count: number): string {
+    if (count % 10 === 1 && count % 100 !== 11) return 'лайк';
+    if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return 'лайка';
+    return 'лайков';
+  }
+
+  getPartyNames(note: CloudDayNote): string {
+    if (!note.partyActorIds || note.partyActorIds.length === 0) return '';
+    return note.partyActorIds
+      .map((id) => this.arena.getActor(id)?.name || id)
+      .join(', ');
+  }
+
   voteForCard(cardId: string, event?: MouseEvent): void {
     if (event) event.stopPropagation();
     const actor = this.activePitchActor();
@@ -2212,6 +2342,30 @@ export class PartyCloudComponent {
     this.arena.togglePinToCloud(note.id);
     this.inspectedNote.update((n) => (n ? { ...n, isPinnedToCloud: !n.isPinnedToCloud } : null));
     this.sound.playClick();
+  }
+
+  selectActorFilter(actorId: string | null): void {
+    this.selectedActorFilter.set(actorId);
+    this.sound.playClick();
+  }
+
+  openCharacterWorkspace(actor: ArenaActorCard): void {
+    this.selectedActorForWorkspace.set(actor);
+    this.sound.playClick();
+  }
+
+  openWorkspaceFromInspectedNote(): void {
+    const note = this.inspectedNote();
+    if (!note) return;
+    const actor = this.allActors().find((a) => a.id === note.actorId);
+    if (actor) {
+      this.closeInspectModal();
+      this.openCharacterWorkspace(actor);
+    }
+  }
+
+  getActorNotesCountForDate(actorId: string): number {
+    return this.activeDateNotes().filter((n) => n.actorId === actorId).length;
   }
 
   buildTimelineCluster(notes: CloudDayNote[]): TimelineCluster {

@@ -330,4 +330,49 @@ describe('PartyCloudComponent', () => {
     component.prevInspectedClusterNote(foundCluster!);
     expect(component.inspectedNote()?.id).toBe(cluster.notes[0].id);
   });
+
+  it('should filter cloud timeline notes by selected actor filter', () => {
+    component.selectDate('2026-11-06');
+    const allNotes = component.activeDateNotes();
+    expect(allNotes.length).toBeGreaterThan(0);
+    const targetActorId = allNotes[0].actorId;
+
+    component.selectActorFilter(targetActorId);
+    expect(component.selectedActorFilter()).toBe(targetActorId);
+    expect(component.visibleNotes().length).toBeGreaterThan(0);
+    for (const note of component.visibleNotes()) {
+      expect(note.actorId).toBe(targetActorId);
+    }
+
+    // Reset filter
+    component.selectActorFilter(null);
+    expect(component.selectedActorFilter()).toBeNull();
+    expect(component.visibleNotes().length).toBe(allNotes.length);
+  });
+
+  it('should open character workspace modal via openCharacterWorkspace and openWorkspaceFromInspectedNote', () => {
+    let actors: any[] = [];
+    arena.actors$.subscribe((a) => (actors = a)).unsubscribe();
+    if (actors.length > 0) {
+      component.allActors.set(actors);
+      expect(component.selectedActorForWorkspace()).toBeNull();
+
+      component.openCharacterWorkspace(actors[0]);
+      expect(component.selectedActorForWorkspace()?.id).toBe(actors[0].id);
+
+      // From inspected note
+      component.inspectNote({ ...component.activeDateNotes()[0], actorId: actors[0].id });
+      component.openWorkspaceFromInspectedNote();
+      expect(component.selectedActorForWorkspace()?.id).toBe(actors[0].id);
+      expect(component.inspectedNote()).toBeNull();
+    }
+  });
+
+  it('should return actor notes count for the active date', () => {
+    component.selectDate('2026-11-06');
+    const firstNote = component.activeDateNotes()[0];
+    const count = component.getActorNotesCountForDate(firstNote.actorId);
+    expect(count).toBeGreaterThanOrEqual(1);
+    expect(component.getActorNotesCountForDate('non-existing-actor')).toBe(0);
+  });
 });

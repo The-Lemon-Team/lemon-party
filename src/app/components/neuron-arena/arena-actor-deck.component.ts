@@ -222,11 +222,11 @@ import { ArenaVoiceStudioComponent } from './arena-voice-studio.component';
                   <button
                     type="button"
                     (click)="openHeroNotes(actor, $event)"
-                    class="px-2.5 py-1 rounded-xl bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container font-label-ui text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-2xs"
-                    title="Открыть блокнот заметок и личные связи"
+                    class="px-2.5 py-1 rounded-xl bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container font-label-ui text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    title="Открыть персональное Облако героя (3 уровня: Public, Private, Архаичный лор)"
                   >
-                    <span class="material-symbols-rounded text-sm text-primary">edit_note</span>
-                    <span>Заметки</span>
+                    <span class="material-symbols-rounded text-sm text-primary">cloud</span>
+                    <span>Облако героя</span>
                     @if ((arena.getHeroNotes(actor.id) | async); as heroNotes) {
                       @if (heroNotes.length > 0) {
                         <span class="px-1.5 py-0.2 rounded-full bg-primary/20 text-primary text-[10px] font-mono">
@@ -239,11 +239,11 @@ import { ArenaVoiceStudioComponent } from './arena-voice-studio.component';
                   <button
                     type="button"
                     (click)="openHeroNotes(actor, $event)"
-                    class="px-2 py-1 rounded-xl bg-primary/10 hover:bg-primary hover:text-on-primary text-primary font-label-ui text-xs font-semibold transition-all inline-flex items-center gap-1"
-                    title="Прикрепить заметку к персонажу"
+                    class="px-2 py-1 rounded-xl bg-primary/10 hover:bg-primary hover:text-on-primary text-primary font-label-ui text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer"
+                    title="Прикрепить мысль или архаичный лор к персонажу"
                   >
                     <span class="material-symbols-rounded text-sm">add</span>
-                    <span>Note</span>
+                    <span>Мысль</span>
                   </button>
                 </div>
               </div>

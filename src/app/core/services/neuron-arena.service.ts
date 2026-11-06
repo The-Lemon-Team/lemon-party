@@ -67,7 +67,7 @@ import {
 import { cancelVoicePlayback, startVoicePlayback } from './neuron-arena.voice-player';
 import { ProfileService } from './profile.service';
 
-const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v3';
+const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v6';
 
 function loadStoredNotes(): Record<string, CloudDayNote[]> {
   if (typeof window !== 'undefined') {
@@ -194,6 +194,10 @@ export class NeuronArenaService {
     const state = this.stateSubject.value;
     if (!state.actors.some((a) => a.id === actorId)) return;
     this.commitState({ ...state, leadActorId: actorId });
+  }
+
+  getActor(actorId: string): ArenaActorCard | undefined {
+    return this.stateSubject.value.actors.find((a) => a.id === actorId);
   }
 
   inspectDesireCard(cardId: string): void {
@@ -688,8 +692,10 @@ export class NeuronArenaService {
     isPinnedToHero?: boolean;
     isPinnedToCloud?: boolean;
     tags?: string[];
+    partyActorIds?: string[];
   }): CloudDayNote {
-    const actor = this.stateSubject.value.actors.find((a) => a.id === input.actorId);
+    const allActors = this.stateSubject.value.actors;
+    const actor = allActors.find((a) => a.id === input.actorId);
     const today = new Date().toISOString().split('T')[0];
     const nowIso = new Date().toISOString();
     const nowTime = nowIso.substring(11, 16);
@@ -698,6 +704,16 @@ export class NeuronArenaService {
 
     const currentProfile = this.profileService.currentProfileId;
     const authorName = 'Вы (' + currentProfile.substring(0, 5) + ')';
+
+    const partyActors = input.partyActorIds
+      ? allActors.filter((a) => input.partyActorIds?.includes(a.id))
+      : [];
+    const partyActorNames = partyActors.map((a) => a.name);
+
+    // Random slight tilt and delay for organic floating animation
+    const tilts = [-1.4, -0.9, 0, 0.8, 1.2, 1.5];
+    const randomTilt = tilts[Math.floor(Math.random() * tilts.length)];
+    const randomDelay = Math.round(Math.random() * 20) / 10; // 0..2.0s
 
     const newNote: CloudDayNote = {
       id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -721,6 +737,11 @@ export class NeuronArenaService {
       visibility: input.visibility || 'PUBLIC',
       isPinnedToHero: Boolean(input.isPinnedToHero),
       isPinnedToCloud: Boolean(input.isPinnedToCloud),
+      partyActorIds: input.partyActorIds || [],
+      partyActorNames,
+      likedByActors: [],
+      floatingTilt: randomTilt,
+      floatingDelay: randomDelay,
     };
 
     const currentMap = { ...this.notesSubject.value };
@@ -859,6 +880,77 @@ export class NeuronArenaService {
         saveStoredNotes(currentMap);
         break;
       }
+    }
+  }
+
+  toggleNoteLike(noteId: string, actorId?: string): void {
+    const currentMap = { ...this.notesSubject.value };
+    const allActors = this.stateSubject.value.actors;
+    const targetActorId = actorId || this.stateSubject.value.leadActorId || allActors[0]?.id;
+    const actor = allActors.find((a) => a.id === targetActorId) ?? allActors[0];
+    if (!actor) return;
+
+    for (const dateKey of Object.keys(currentMap)) {
+      const idx = currentMap[dateKey].findIndex((n) => n.id === noteId);
+      if (idx !== -1) {
+        const note = currentMap[dateKey][idx];
+        const existingLikes = note.likedByActors ? [...note.likedByActors] : [];
+        const hasLikedIndex = existingLikes.findIndex((l) => l.actorId === actor.id);
+
+        let updatedLikes: typeof existingLikes;
+        if (hasLikedIndex !== -1) {
+          updatedLikes = existingLikes.filter((_, i) => i !== hasLikedIndex);
+        } else {
+          updatedLikes = [
+            ...existingLikes,
+            {
+              actorId: actor.id,
+              actorName: actor.name,
+              avatarIcon: actor.avatarIcon,
+              moodEmoji: '❤️',
+              accentColor: actor.accentColor,
+            },
+          ];
+        }
+
+        currentMap[dateKey] = [
+          ...currentMap[dateKey].slice(0, idx),
+          {
+            ...note,
+            likedByActors: updatedLikes,
+            votesCount: updatedLikes.length,
+          },
+          ...currentMap[dateKey].slice(idx + 1),
+        ];
+        this.notesSubject.next(currentMap);
+        saveStoredNotes(currentMap);
+        break;
+      }
+    }
+  }
+
+  addCloudNote(note: CloudDayNote): CloudDayNote {
+    const currentMap = { ...this.notesSubject.value };
+    const dateKey = note.dateKey || '2026-11-06';
+    const list = currentMap[dateKey] ? [...currentMap[dateKey], note] : [note];
+    currentMap[dateKey] = list;
+    this.notesSubject.next(currentMap);
+    saveStoredNotes(currentMap);
+    return note;
+  }
+
+  clearNotesForDate(dateKey: string): void {
+    const currentMap = { ...this.notesSubject.value };
+    currentMap[dateKey] = [];
+    this.notesSubject.next(currentMap);
+    saveStoredNotes(currentMap);
+  }
+
+  clearTodayNotes(): void {
+    this.clearNotesForDate('2026-11-06');
+    const nowKey = new Date().toISOString().split('T')[0];
+    if (nowKey !== '2026-11-06') {
+      this.clearNotesForDate(nowKey);
     }
   }
 
