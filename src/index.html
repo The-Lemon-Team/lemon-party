@@ -6,11 +6,248 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="preload" href="/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/nunito-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var fromUrl = params.get('theme');
+        var saved = localStorage.getItem('lemon-actions:theme');
+        var theme =
+          fromUrl === 'dark' || fromUrl === 'light'
+            ? fromUrl
+            : saved === 'dark' || saved === 'light'
+              ? saved
+              : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --boot-bg: #fafafa;
+      --boot-surface: #ffffff;
+      --boot-surface-low: #f4f4f5;
+      --boot-surface-high: #e5e5e6;
+      --boot-text: #383a42;
+      --boot-muted: #696c77;
+      --boot-border: rgba(219, 219, 220, 0.55);
+      --boot-primary: #986801;
+      --boot-primary-on: #ffffff;
+      --boot-primary-soft: rgba(242, 214, 117, 0.35);
+    }
+    html.dark {
+      color-scheme: dark;
+      --boot-bg: #282c34;
+      --boot-surface: #21252b;
+      --boot-surface-low: #2c313a;
+      --boot-surface-high: #3e4451;
+      --boot-text: #abb2bf;
+      --boot-muted: #8c94a3;
+      --boot-border: rgba(62, 68, 81, 0.65);
+      --boot-primary: #e5c07b;
+      --boot-primary-on: #282c34;
+      --boot-primary-soft: rgba(229, 192, 123, 0.16);
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--boot-bg);
+      color: var(--boot-text);
+      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .lp-boot-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--boot-bg);
+      color: var(--boot-text);
+    }
+    .lp-boot-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: var(--boot-surface);
+      border-bottom: 1px solid var(--boot-border);
+    }
+    .lp-boot-topbar {
+      height: 4rem;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .lp-boot-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+    .lp-boot-logo {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 1rem;
+      background-color: var(--boot-primary);
+      color: var(--boot-primary-on);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+    .lp-boot-title {
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    .lp-boot-badge {
+      font-size: 0.625rem;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      background-color: var(--boot-primary-soft);
+      color: var(--boot-primary);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .lp-boot-sub {
+      font-size: 0.625rem;
+      color: var(--boot-muted);
+    }
+    .lp-boot-pill {
+      padding: 0.375rem 0.875rem;
+      border-radius: 0.75rem;
+      background-color: var(--boot-surface-low);
+      border: 1px solid var(--boot-border);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .lp-boot-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 9999px;
+      background-color: #10b981;
+      animation: lp-pulse 1.2s infinite ease-in-out;
+    }
+    .lp-boot-nav {
+      border-top: 1px solid var(--boot-border);
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow: hidden;
+    }
+    .lp-boot-tab {
+      height: 2rem;
+      width: 7.5rem;
+      border-radius: 0.75rem;
+      background-color: var(--boot-surface-low);
+      animation: lp-shimmer 1.4s infinite ease-in-out;
+    }
+    .lp-boot-tab.active {
+      background-color: var(--boot-primary);
+      opacity: 0.85;
+    }
+    .lp-boot-main {
+      flex: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .lp-boot-hero {
+      border-radius: 1.5rem;
+      background: linear-gradient(90deg, var(--boot-primary-soft), var(--boot-surface-low));
+      border: 1px solid var(--boot-border);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .lp-boot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .lp-boot-card {
+      height: 15rem;
+      border-radius: 1.5rem;
+      background-color: var(--boot-surface);
+      border: 1px solid var(--boot-border);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: lp-shimmer 1.4s infinite ease-in-out;
+    }
+    @keyframes lp-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.88); }
+    }
+    @keyframes lp-shimmer {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 0.55; }
+    }
+  </style>
 </head>
 <body class="bg-surface font-body-md text-on-surface antialiased transition-colors duration-200 selection:bg-primary-container selection:text-on-primary-container">
-  <app-root></app-root>
+  <app-root>
+    <div class="lp-boot-shell" aria-busy="true" aria-label="Загрузка Lemon Party">
+      <header class="lp-boot-header">
+        <div class="lp-boot-topbar">
+          <div class="lp-boot-brand">
+            <div class="lp-boot-logo">🍋</div>
+            <div>
+              <div class="lp-boot-title">
+                <span>Lemon Party</span>
+                <span class="lp-boot-badge">Game</span>
+              </div>
+              <div class="lp-boot-sub">party.lemon.app · standalone</div>
+            </div>
+          </div>
+          <div class="lp-boot-pill">
+            <span class="lp-boot-dot"></span>
+            <span>Подключение комнаты…</span>
+          </div>
+        </div>
+        <div class="lp-boot-nav">
+          <div class="lp-boot-tab active"></div>
+          <div class="lp-boot-tab"></div>
+          <div class="lp-boot-tab"></div>
+          <div class="lp-boot-tab"></div>
+          <div class="lp-boot-tab"></div>
+        </div>
+      </header>
+      <main class="lp-boot-main">
+        <section class="lp-boot-hero">
+          <div style="font-size: 0.75rem; font-weight: 800; color: var(--boot-primary);">
+            Lemon Party Game Suite v2.0
+          </div>
+          <div style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.02em;">
+            Режимы Игры &amp; Схватки
+          </div>
+          <div style="font-size: 0.875rem; color: var(--boot-muted); max-width: 42rem;">
+            Загружаем колоду желаний, ростер из 30 героев и синхронизацию комнаты…
+          </div>
+        </section>
+        <div class="lp-boot-grid">
+          <div class="lp-boot-card"></div>
+          <div class="lp-boot-card"></div>
+          <div class="lp-boot-card"></div>
+        </div>
+      </main>
+    </div>
+  </app-root>
 </body>
 </html>

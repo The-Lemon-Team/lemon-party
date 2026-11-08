@@ -24,7 +24,7 @@ import { PartySoundService } from './party-sound.service';
     <div class="min-h-screen bg-background text-on-surface flex flex-col">
       <!-- 1. STANDALONE GAME TOPBAR (ОБВЯЗКА ПРИЛОЖЕНИЯ) -->
       <header
-        class="sticky top-0 z-40 w-full bg-surface/95 backdrop-blur-md border-b border-outline-variant/30 shadow-xs"
+        class="sticky top-0 z-40 w-full bg-surface/98 border-b border-outline-variant/30 shadow-xs"
       >
         <div class="relative w-full px-4 sm:px-6 lg:px-8 xl:px-12 h-16 flex items-center justify-between gap-4">
           <!-- Game Brand & Portal Link -->
@@ -58,7 +58,7 @@ import { PartySoundService } from './party-sound.service';
             <!-- Return to Lemon Portal button -->
             <a
               routerLink="/core"
-              class="ml-2 hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant font-label-ui text-xs font-semibold transition-all border border-outline-variant/20 no-underline"
+              class="ml-2 hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant font-label-ui text-xs font-semibold transition-colors border border-outline-variant/20 no-underline"
               title="Перейти в консоль управления экосистемой Lemon Actions"
             >
               <span class="material-symbols-rounded text-sm">grid_view</span>
@@ -73,12 +73,12 @@ import { PartySoundService } from './party-sound.service';
             <button
               type="button"
               (click)="toggleRoomMenu()"
-              class="px-3 py-1.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/30 flex items-center gap-2 text-xs font-label-ui transition-all cursor-pointer shadow-xs"
+              class="px-3 py-1.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/30 flex items-center gap-2 text-xs font-label-ui transition-colors cursor-pointer shadow-xs"
               [attr.aria-expanded]="isRoomMenuOpen()"
               aria-haspopup="listbox"
               title="Выбрать игровую комнату"
             >
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span class="material-symbols-rounded text-sm text-primary">meeting_room</span>
               <span class="font-bold text-on-surface truncate max-w-44 md:max-w-64">
                 {{ realtime.getActiveRoom().title }}
@@ -117,7 +117,7 @@ import { PartySoundService } from './party-sound.service';
                   <button
                     type="button"
                     (click)="selectRoom(room.id)"
-                    class="w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between gap-3 cursor-pointer group"
+                    class="w-full text-left p-2.5 rounded-xl transition-colors flex items-center justify-between gap-3 cursor-pointer group"
                     [class]="
                       (realtime.activeRoomId$ | async) === room.id
                         ? 'bg-primary-container/40 text-on-surface font-bold border border-primary/30'
@@ -157,7 +157,7 @@ import { PartySoundService } from './party-sound.service';
             <button
               type="button"
               (click)="sound.toggleMute()"
-              class="w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer border border-outline-variant/30"
+              class="w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer border border-outline-variant/30"
               [class]="
                 sound.isMuted()
                   ? 'bg-surface-container-low text-on-surface-variant hover:text-on-surface'
@@ -174,7 +174,7 @@ import { PartySoundService } from './party-sound.service';
             <button
               type="button"
               (click)="theme.toggle()"
-              class="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-all border border-outline-variant/30 cursor-pointer"
+              class="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors border border-outline-variant/30 cursor-pointer"
               title="Переключить тему оформления"
             >
               <span class="material-symbols-rounded text-lg">
@@ -208,7 +208,7 @@ import { PartySoundService } from './party-sound.service';
             <button
               type="button"
               (click)="arena.openNewParadoxModal()"
-              class="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-label-ui text-xs font-bold hover:brightness-105 active:scale-95 transition-all shadow-xs inline-flex items-center gap-1.5 cursor-pointer ml-1 flex-shrink-0"
+              class="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-label-ui text-xs font-bold hover:brightness-105 active:scale-95 transition-transform shadow-xs inline-flex items-center gap-1.5 cursor-pointer ml-1 flex-shrink-0"
             >
               <span class="material-symbols-rounded text-base">flare</span>
               <span class="hidden sm:inline">+ Спор</span>
@@ -228,7 +228,7 @@ import { PartySoundService } from './party-sound.service';
                 routerLink="/party"
                 [routerLinkActiveOptions]="{ exact: true }"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base">home</span>
                 <span>Главное Меню</span>
@@ -238,7 +238,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/field"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base">swords</span>
                 <span>Игровое Поле & Схватки</span>
@@ -248,7 +248,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/cloud"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base text-amber-500">cloud</span>
                 <span>Хроно-Облако</span>
@@ -263,7 +263,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/cards"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base">style</span>
                 <span>Колода Желаний</span>
@@ -278,7 +278,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/heroes"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base">diversity_3</span>
                 <span>Персонажи (30 героев)</span>
@@ -293,7 +293,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/chronicle"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base">spatial_audio_off</span>
                 <span>Студия Войсов</span>
@@ -308,7 +308,7 @@ import { PartySoundService } from './party-sound.service';
               <a
                 routerLink="/party/roulette"
                 routerLinkActive="bg-primary text-on-primary shadow-xs font-bold"
-                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-all inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
+                class="px-3.5 py-1.5 rounded-xl font-label-ui text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors inline-flex items-center gap-1.5 flex-shrink-0 no-underline cursor-pointer"
               >
                 <span class="material-symbols-rounded text-base text-rose-500">casino</span>
                 <span>Колесо Фортуны</span>
@@ -331,7 +331,7 @@ import { PartySoundService } from './party-sound.service';
         >
           <div class="w-full flex items-center justify-between gap-3">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="w-2 h-2 rounded-full bg-primary animate-ping flex-shrink-0"></span>
+              <span class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>
               <span class="font-label-ui font-bold text-primary flex-shrink-0">Live:</span>
               <span class="truncate">
                 <strong>{{ latestEvent.actorName }}</strong> {{ latestEvent.message }}
@@ -367,14 +367,21 @@ import { PartySoundService } from './party-sound.service';
       </footer>
 
       <!-- 6. MODALS CONTAINER (ACCESSIBLE, OVERLAY-COMPLIANT) -->
-      <app-arena-modals
-        [showNewDesireCardModal]="arena.showNewDesireCardModal()"
-        [showNewActorModal]="arena.showNewActorModal()"
-        [showNewParadoxModal]="arena.showNewParadoxModal()"
-        (closeNewDesireCardModal)="arena.closeNewDesireCardModal()"
-        (closeNewActorModal)="arena.closeNewActorModal()"
-        (closeNewParadoxModal)="arena.closeNewParadoxModal()"
-      />
+      @defer (
+        when arena.showNewDesireCardModal() ||
+          arena.showNewActorModal() ||
+          arena.showNewParadoxModal();
+        prefetch on idle
+      ) {
+        <app-arena-modals
+          [showNewDesireCardModal]="arena.showNewDesireCardModal()"
+          [showNewActorModal]="arena.showNewActorModal()"
+          [showNewParadoxModal]="arena.showNewParadoxModal()"
+          (closeNewDesireCardModal)="arena.closeNewDesireCardModal()"
+          (closeNewActorModal)="arena.closeNewActorModal()"
+          (closeNewParadoxModal)="arena.closeNewParadoxModal()"
+        />
+      }
     </div>
   `,
 })

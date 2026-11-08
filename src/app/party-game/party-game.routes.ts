@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
+import { PartyGameHomeComponent } from './party-game-home.component';
 
 export const partyGameRoutes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./party-game-home.component').then((m) => m.PartyGameHomeComponent),
+    component: PartyGameHomeComponent,
     title: 'Главное Меню | Lemon Party',
   },
   {

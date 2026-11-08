@@ -14,9 +14,20 @@ const SANITIZED_AVATAR_CACHE = new Map<string, SafeHtml>();
   selector: 'app-actor-avatar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      :host {
+        display: inline-flex;
+        flex-shrink: 0;
+      }
+      .avatar-box {
+        contain: layout style paint;
+      }
+    `,
+  ],
   template: `
     <div
-      class="relative inline-flex items-center justify-center overflow-hidden select-none flex-shrink-0"
+      class="avatar-box relative inline-flex items-center justify-center overflow-hidden select-none flex-shrink-0"
       [class]="containerClass"
       [innerHTML]="safeSvg"
     ></div>
@@ -35,7 +46,7 @@ export class ActorAvatarComponent {
       return cached;
     }
     const inner = ALL_AVATARS[key] ?? DEFAULT_ACTOR_AVATAR_SVG;
-    const svg = `<svg viewBox="0 0 100 100" class="w-full h-full block" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${key}">${inner}</svg>`;
+    const svg = `<svg viewBox="0 0 100 100" class="w-full h-full block pointer-events-none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${key}">${inner}</svg>`;
     const sanitized = this.sanitizer.bypassSecurityTrustHtml(svg);
     SANITIZED_AVATAR_CACHE.set(key, sanitized);
     return sanitized;

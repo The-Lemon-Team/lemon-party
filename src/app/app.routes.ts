@@ -1,14 +1,12 @@
 import { Routes } from '@angular/router';
+import { PartyGameShellComponent } from './party-game/party-game-shell.component';
+import { partyGameRoutes } from './party-game/party-game.routes';
 
 export const routes: Routes = [
   {
     path: 'party',
-    loadComponent: () =>
-      import('./party-game/party-game-shell.component').then(
-        (m) => m.PartyGameShellComponent,
-      ),
-    loadChildren: () =>
-      import('./party-game/party-game.routes').then((m) => m.partyGameRoutes),
+    component: PartyGameShellComponent,
+    children: partyGameRoutes,
   },
   {
     path: 'game',
