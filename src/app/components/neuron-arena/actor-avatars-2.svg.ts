@@ -256,6 +256,290 @@ export const ACTOR_AVATARS_PART_2: Record<string, string> = {
     <circle cx="59" cy="50" r="3.2" fill="#0f172a" />
     <path d="M41 61 Q50 68 60 59" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round" />
   `,
+
+  // 31. НЕЙРОБИ (Neurobi: олицетворение внутреннего мира Алексея, уютный синаптический нимб, фиолетово-индиго свечение, золотые искры)
+  neurobi: `
+    <rect width="100" height="100" rx="22" fill="#2e1065" />
+    <circle cx="50" cy="50" r="42" fill="#581c87" opacity="0.4" />
+    <path d="M22 28 Q36 18 50 25 T78 22" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.6" stroke-dasharray="2 3" />
+    <path d="M18 55 Q32 45 48 58 T82 50" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.5" />
+    <circle cx="22" cy="28" r="3" fill="#fbbf24" />
+    <circle cx="50" cy="25" r="3.5" fill="#38bdf8" />
+    <circle cx="78" cy="22" r="3" fill="#e879f9" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#3b0764" />
+    <path d="M30 76 Q50 86 70 76" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round" />
+    <rect x="31" y="32" width="38" height="42" rx="17" fill="#fed7aa" />
+    <path d="M28 42 C28 20, 72 20, 72 42 C64 28, 36 28, 28 42 Z" fill="#6b21a8" />
+    <circle cx="50" cy="26" r="6" fill="#a855f7" opacity="0.7" />
+    <ellipse cx="41" cy="50" rx="3.5" ry="4" fill="#1e1b4b" />
+    <ellipse cx="59" cy="50" rx="3.5" ry="4" fill="#1e1b4b" />
+    <circle cx="42" cy="49" r="1.2" fill="#ffffff" />
+    <circle cx="60" cy="49" r="1.2" fill="#ffffff" />
+    <ellipse cx="36" cy="57" rx="3" ry="1.8" fill="#f43f5e" opacity="0.4" />
+    <ellipse cx="64" cy="57" rx="3" ry="1.8" fill="#f43f5e" opacity="0.4" />
+    <path d="M42 62 Q50 68 58 62" fill="none" stroke="#7e22ce" stroke-width="3" stroke-linecap="round" />
+    <polygon points="50,33 52,38 57,40 52,42 50,47 48,42 43,40 48,38" fill="#fbbf24" />
+  `,
+
+  // 32. ТИМЛИД СТАРЛИДЕР (StarLeader: Лидер Lemon Seasons, звездная золотая корона/визор, янтарное сияние, гарнитура, решительный взгляд)
+  starleader: `
+    <rect width="100" height="100" rx="22" fill="#451a03" />
+    <circle cx="50" cy="50" r="42" fill="#78350f" opacity="0.5" />
+    <circle cx="50" cy="22" r="14" fill="#fef08a" opacity="0.2" />
+    <polygon points="50,6 54,16 64,18 56,25 58,35 50,30 42,35 44,25 36,18 46,16" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#1c1917" />
+    <path d="M34 76 L50 94 L66 76" fill="#f59e0b" />
+    <polygon points="50,86 46,94 54,94" fill="#fef08a" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fed7aa" />
+    <path d="M28 38 C30 20, 70 20, 72 38 C64 30, 36 30, 28 38 Z" fill="#292524" />
+    <path d="M32 30 Q50 18 68 28" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
+    <path d="M27 46 Q26 62 38 66" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="39" cy="66" r="3" fill="#0284c7" />
+    <circle cx="27" cy="46" r="4.5" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+    <circle cx="41" cy="49" r="3.2" fill="#0f172a" />
+    <circle cx="59" cy="49" r="3.2" fill="#0f172a" />
+    <circle cx="42" cy="48" r="1.2" fill="#ffffff" />
+    <circle cx="60" cy="48" r="1.2" fill="#ffffff" />
+    <path d="M36 43 L46 44" stroke="#451a03" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M64 43 L54 44" stroke="#451a03" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M42 61 Q50 68 58 61" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round" />
+  `,
+
+  // 33. ПРОГРАММИСТ ИЗ ЛЕМОН ТИМ (Lemon Coder: худи лимонного цвета с логотипом, наушники разработчика, стильные очки, код)
+  'lemon-coder': `
+    <rect width="100" height="100" rx="22" fill="#064e3b" />
+    <circle cx="50" cy="50" r="40" fill="#047857" opacity="0.3" />
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#eab308" />
+    <path d="M34 78 Q50 90 66 78" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round" />
+    <circle cx="50" cy="89" r="6" fill="#fef08a" stroke="#a16207" stroke-width="1.5" />
+    <path d="M50 84 L50 94 M45 89 L55 89" stroke="#ca8a04" stroke-width="1.2" />
+    <path d="M26 48 C26 22, 74 22, 74 48" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />
+    <rect x="23" y="44" width="7" height="14" rx="3" fill="#10b981" />
+    <rect x="70" y="44" width="7" height="14" rx="3" fill="#10b981" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fdba74" />
+    <path d="M29 38 C32 24, 68 24, 71 38 Z" fill="#1e293b" />
+    <rect x="34" y="44" width="13" height="10" rx="3" fill="#ecfdf5" stroke="#065f46" stroke-width="2" />
+    <rect x="53" y="44" width="13" height="10" rx="3" fill="#ecfdf5" stroke="#065f46" stroke-width="2" />
+    <line x1="47" y1="48" x2="53" y2="48" stroke="#065f46" stroke-width="2" />
+    <circle cx="40.5" cy="49" r="2.2" fill="#0f172a" />
+    <circle cx="59.5" cy="49" r="2.2" fill="#0f172a" />
+    <path d="M42 62 Q50 67 58 62" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round" />
+  `,
+
+  // 34. КАРЛ ЮНГ (Carl Jung: круглые профессорские очки, седые волосы с залысинами, аккуратные усы, костюм с галстуком, мандала архетипов)
+  jung: `
+    <rect width="100" height="100" rx="22" fill="#2e1065" />
+    <!-- Фон: символы психики / орбиты коллективного бессознательного -->
+    <circle cx="50" cy="50" r="38" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.4" />
+    <circle cx="50" cy="50" r="26" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.3" />
+    <!-- Профессорский пиджак и жилет -->
+    <path d="M16 100 C20 74, 80 74, 84 100 Z" fill="#1e1b4b" />
+    <polygon points="40,74 50,95 60,74" fill="#f8fafc" />
+    <polygon points="46,74 50,91 54,74" fill="#9333ea" />
+    <polygon points="44,74 50,80 56,74" fill="#7e22ce" />
+    <!-- Шея и лицо -->
+    <rect x="42" y="66" width="16" height="12" fill="#fed7aa" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fed7aa" />
+    <!-- Седые волосы по бокам и залысины мыслителя -->
+    <path d="M28 44 C26 26, 38 22, 50 22 C62 22, 74 26, 72 44 C69 32, 60 27, 50 27 C40 27, 31 32, 28 44 Z" fill="#e2e8f0" />
+    <circle cx="28" cy="46" r="5.5" fill="#cbd5e1" />
+    <circle cx="72" cy="46" r="5.5" fill="#cbd5e1" />
+    <!-- Седые брови мыслителя -->
+    <path d="M36 43 Q41 39 46 42" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M54 42 Q59 39 64 43" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" />
+    <!-- Круглые профессорские очки -->
+    <circle cx="41" cy="49" r="6.5" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <circle cx="59" cy="49" r="6.5" fill="none" stroke="#f59e0b" stroke-width="2" />
+    <line x1="47.5" y1="49" x2="52.5" y2="49" stroke="#f59e0b" stroke-width="2" />
+    <!-- Внимательные глубокие глаза -->
+    <circle cx="41" cy="49" r="2.5" fill="#312e81" />
+    <circle cx="59" cy="49" r="2.5" fill="#312e81" />
+    <circle cx="42" cy="48" r="1" fill="#ffffff" />
+    <circle cx="60" cy="48" r="1" fill="#ffffff" />
+    <!-- Нос -->
+    <path d="M50 47 L48 56 L52 56" fill="none" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Аккуратные профессорские седые усы -->
+    <path d="M50 61 C46 59, 39 61, 37 64 C42 66, 48 64, 50 62 C52 64, 58 66, 63 64 C61 61, 54 59, 50 61 Z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1" />
+    <!-- Мудрая спокойная улыбка -->
+    <path d="M44 68 Q50 72 56 68" fill="none" stroke="#9a3412" stroke-width="2" stroke-linecap="round" />
+  `,
+
+  // 35. JM JOINT (JM Joint: андеграунд питерский типок, вязаная шапка-бини, оверсайз худи, наушники на шее, дымок, питерский вайб)
+  'jm-joint': `
+    <rect width="100" height="100" rx="22" fill="#0f172a" />
+    <!-- Силуэт питерских крыш и дождь на заднем плане -->
+    <path d="M0 68 L18 58 L32 64 L50 50 L68 62 L85 48 L100 58 L100 100 L0 100 Z" fill="#1e293b" opacity="0.6" />
+    <line x1="14" y1="12" x2="10" y2="28" stroke="#38bdf8" stroke-width="1" opacity="0.25" />
+    <line x1="84" y1="16" x2="80" y2="34" stroke="#38bdf8" stroke-width="1" opacity="0.25" />
+    <line x1="28" y1="35" x2="25" y2="48" stroke="#38bdf8" stroke-width="1" opacity="0.2" />
+    <!-- Оверсайз тёмный худи/анорак с высоким воротом -->
+    <path d="M14 100 C18 72, 82 72, 86 100 Z" fill="#18181b" />
+    <path d="M26 100 L32 78 L50 86 L68 78 L74 100" fill="#27272a" />
+    <!-- Серебряная цепочка с кулоном -->
+    <path d="M40 82 Q50 94 60 82" fill="none" stroke="#94a3b8" stroke-width="1.8" />
+    <circle cx="50" cy="92" r="2.5" fill="#e2e8f0" />
+    <!-- Наушники диджея / МС на шее -->
+    <path d="M25 76 C25 88, 75 88, 75 76" fill="none" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+    <rect x="22" y="70" width="7" height="12" rx="3.5" fill="#38bdf8" />
+    <rect x="71" y="70" width="7" height="12" rx="3.5" fill="#38bdf8" />
+    <!-- Шея и лицо -->
+    <rect x="42" y="64" width="16" height="14" fill="#fed7aa" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fed7aa" />
+    <!-- Трёхдневная питерская щетина -->
+    <path d="M36 58 C36 71, 64 71, 64 58 C62 67, 38 67, 36 58 Z" fill="#78716c" opacity="0.45" />
+    <!-- Тёмные пряди волос из-под шапки -->
+    <path d="M28 40 C28 44, 30 48, 33 46 M72 40 C72 44, 70 48, 67 46" stroke="#1c1917" stroke-width="3" stroke-linecap="round" />
+    <!-- Вязаная питерская шапка-бини (St. Petersburg beanie) -->
+    <ellipse cx="50" cy="28" rx="22" ry="14" fill="#0d9488" />
+    <rect x="27" y="24" width="46" height="11" rx="4" fill="#0f766e" />
+    <!-- Серьга в левом ухе -->
+    <circle cx="28" cy="52" r="2" fill="none" stroke="#facc15" stroke-width="1.2" />
+    <!-- Брови с лёгким прищуром -->
+    <path d="M36 43 Q41 41 46 44" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M54 44 Q59 41 64 43" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+    <!-- Спокойные умные глаза с лёгким прищуром -->
+    <ellipse cx="41" cy="49" rx="3.2" ry="2.2" fill="#1c1917" />
+    <ellipse cx="59" cy="49" rx="3.2" ry="2.2" fill="#1c1917" />
+    <circle cx="42" cy="48.5" r="0.9" fill="#ffffff" />
+    <circle cx="60" cy="48.5" r="0.9" fill="#ffffff" />
+    <!-- Нос -->
+    <path d="M50 48 L48 56 L52 56" fill="none" stroke="#c2410c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Дымок / пар изо рта в прохладном питерском воздухе -->
+    <path d="M56 62 Q66 58 64 50 Q68 44 76 42" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" opacity="0.6" />
+    <!-- Невозмутимая полуулыбка с уголком -->
+    <path d="M43 62 Q50 64 57 61" fill="none" stroke="#1c1917" stroke-width="2.2" stroke-linecap="round" />
+  `,
+  jm_joint: `
+    <rect width="100" height="100" rx="22" fill="#0f172a" />
+    <path d="M0 68 L18 58 L32 64 L50 50 L68 62 L85 48 L100 58 L100 100 L0 100 Z" fill="#1e293b" opacity="0.6" />
+    <line x1="14" y1="12" x2="10" y2="28" stroke="#38bdf8" stroke-width="1" opacity="0.25" />
+    <line x1="84" y1="16" x2="80" y2="34" stroke="#38bdf8" stroke-width="1" opacity="0.25" />
+    <line x1="28" y1="35" x2="25" y2="48" stroke="#38bdf8" stroke-width="1" opacity="0.2" />
+    <path d="M14 100 C18 72, 82 72, 86 100 Z" fill="#18181b" />
+    <path d="M26 100 L32 78 L50 86 L68 78 L74 100" fill="#27272a" />
+    <path d="M40 82 Q50 94 60 82" fill="none" stroke="#94a3b8" stroke-width="1.8" />
+    <circle cx="50" cy="92" r="2.5" fill="#e2e8f0" />
+    <path d="M25 76 C25 88, 75 88, 75 76" fill="none" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+    <rect x="22" y="70" width="7" height="12" rx="3.5" fill="#38bdf8" />
+    <rect x="71" y="70" width="7" height="12" rx="3.5" fill="#38bdf8" />
+    <rect x="42" y="64" width="16" height="14" fill="#fed7aa" />
+    <rect x="31" y="32" width="38" height="42" rx="16" fill="#fed7aa" />
+    <path d="M36 58 C36 71, 64 71, 64 58 C62 67, 38 67, 36 58 Z" fill="#78716c" opacity="0.45" />
+    <path d="M28 40 C28 44, 30 48, 33 46 M72 40 C72 44, 70 48, 67 46" stroke="#1c1917" stroke-width="3" stroke-linecap="round" />
+    <ellipse cx="50" cy="28" rx="22" ry="14" fill="#0d9488" />
+    <rect x="27" y="24" width="46" height="11" rx="4" fill="#0f766e" />
+    <circle cx="28" cy="52" r="2" fill="none" stroke="#facc15" stroke-width="1.2" />
+    <path d="M36 43 Q41 41 46 44" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M54 44 Q59 41 64 43" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round" />
+    <ellipse cx="41" cy="49" rx="3.2" ry="2.2" fill="#1c1917" />
+    <ellipse cx="59" cy="49" rx="3.2" ry="2.2" fill="#1c1917" />
+    <circle cx="42" cy="48.5" r="0.9" fill="#ffffff" />
+    <circle cx="60" cy="48.5" r="0.9" fill="#ffffff" />
+    <path d="M50 48 L48 56 L52 56" fill="none" stroke="#c2410c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M56 62 Q66 58 64 50 Q68 44 76 42" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" opacity="0.6" />
+    <path d="M43 62 Q50 64 57 61" fill="none" stroke="#1c1917" stroke-width="2.2" stroke-linecap="round" />
+  `,
+
+  // 36. ШИНИГАМИ (Shinigami: мастер легкой руки, аниме бог смерти / жнец, темно-фиолетовый мистический фон, острые фиолетово-черные пряди, харизматичная ухмылка с острыми зубами, горящие рубиновые глаза, легкий жест руки с парящим пером / яблоком, мистические искры)
+  shinigami: `
+    <rect width="100" height="100" rx="22" fill="#180b2c" />
+    <!-- Мистическое свечение и руны на фоне -->
+    <circle cx="50" cy="50" r="39" fill="none" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.45" />
+    <circle cx="50" cy="50" r="28" fill="#4c1d95" opacity="0.3" />
+    <circle cx="22" cy="24" r="1.5" fill="#c084fc" opacity="0.8" />
+    <circle cx="78" cy="22" r="2" fill="#e879f9" opacity="0.7" />
+    <circle cx="82" cy="74" r="1.5" fill="#a855f7" opacity="0.6" />
+    <!-- Тёмные призрачные крылья / перьевой воротник жнеца -->
+    <path d="M14 62 C10 44, 20 32, 28 38 C22 46, 24 60, 22 72 Z" fill="#2e1065" opacity="0.85" />
+    <path d="M86 62 C90 44, 80 32, 72 38 C78 46, 76 60, 78 72 Z" fill="#2e1065" opacity="0.85" />
+    <!-- Готический плащ с острыми эполетами -->
+    <path d="M15 100 C18 72, 82 72, 85 100 Z" fill="#0f071d" />
+    <path d="M26 100 L34 76 L50 85 L66 76 L74 100" fill="#2e1065" />
+    <!-- Серебряная цепочка и черепной медальон на шее -->
+    <path d="M38 78 Q50 90 62 78" fill="none" stroke="#94a3b8" stroke-width="1.8" />
+    <circle cx="50" cy="88" r="3" fill="#e2e8f0" />
+    <circle cx="49" cy="87.5" r="0.7" fill="#0f071d" />
+    <circle cx="51" cy="87.5" r="0.7" fill="#0f071d" />
+    <!-- Шея и бледное лицо с острым подбородком -->
+    <rect x="43" y="62" width="14" height="15" fill="#cbd5e1" />
+    <path d="M31 34 C31 34, 30 64, 50 75 C70 64, 69 34, 69 34 Z" fill="#e2e8f0" />
+    <!-- Тёмно-фиолетовые тени под скулами -->
+    <path d="M33 54 Q38 64 50 72 Q62 64 67 54 C61 61, 39 61, 33 54 Z" fill="#94a3b8" opacity="0.35" />
+    <!-- Острые аниме-пряди волос (колючие, непокорные) -->
+    <path d="M25 36 C22 18, 36 14, 42 6 C47 16, 52 8, 58 4 C64 15, 74 10, 76 22 C82 16, 82 30, 75 40 C73 28, 67 24, 62 26 C57 18, 48 20, 44 24 C38 22, 32 26, 30 36 Z" fill="#090514" />
+    <path d="M32 30 C34 16, 44 14, 48 10 C50 18, 56 14, 60 8 C64 18, 70 16, 72 26 C68 20, 58 18, 54 22 C48 18, 40 20, 36 26 Z" fill="#6b21a8" />
+    <!-- Брови с лукавым изгибом -->
+    <path d="M36 43 L47 41" stroke="#090514" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M64 43 L53 41" stroke="#090514" stroke-width="2.6" stroke-linecap="round" />
+    <!-- Горящие рубиново-алые глаза с янтарным центром -->
+    <ellipse cx="41" cy="48" rx="4.5" ry="3.5" fill="#ef4444" />
+    <ellipse cx="59" cy="48" rx="4.5" ry="3.5" fill="#ef4444" />
+    <circle cx="41" cy="48" r="2.2" fill="#facc15" />
+    <circle cx="59" cy="48" r="2.2" fill="#facc15" />
+    <circle cx="41" cy="48" r="1.1" fill="#090514" />
+    <circle cx="59" cy="48" r="1.1" fill="#090514" />
+    <circle cx="42.2" cy="47" r="0.8" fill="#ffffff" />
+    <circle cx="60.2" cy="47" r="0.8" fill="#ffffff" />
+    <!-- Нос -->
+    <path d="M50 47 L48.5 54 L51.5 54" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Широкая харизматичная ухмылка с острыми зубами ("мастер легкой руки") -->
+    <path d="M37 60 Q50 71 63 60 C58 66, 42 66, 37 60 Z" fill="#090514" />
+    <polygon points="41,61 43,65 45,61" fill="#ffffff" />
+    <polygon points="46,62 48,66 50,62" fill="#ffffff" />
+    <polygon points="51,62 53,66 55,62" fill="#ffffff" />
+    <polygon points="56,61 58,65 60,61" fill="#ffffff" />
+    <path d="M35 59 Q50 72 65 59" fill="none" stroke="#7e22ce" stroke-width="1.8" stroke-linecap="round" />
+    <!-- Парящее алое яблоко / искра вдохновения у плеча ("легкая рука") -->
+    <circle cx="81" cy="47" r="5" fill="#dc2626" />
+    <path d="M81 42 Q83 39 84 41" fill="none" stroke="#15803d" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="79.5" cy="45.5" r="1" fill="#fca5a5" />
+    <!-- Парящее волшебное перо / росчерк чистого листа -->
+    <path d="M22 47 Q16 41 19 33 Q24 37 23 45 Z" fill="#e0e7ff" opacity="0.9" />
+    <line x1="22" y1="46" x2="25" y2="52" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round" />
+  `,
+  'actor-shinigami': `
+    <rect width="100" height="100" rx="22" fill="#180b2c" />
+    <circle cx="50" cy="50" r="39" fill="none" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.45" />
+    <circle cx="50" cy="50" r="28" fill="#4c1d95" opacity="0.3" />
+    <circle cx="22" cy="24" r="1.5" fill="#c084fc" opacity="0.8" />
+    <circle cx="78" cy="22" r="2" fill="#e879f9" opacity="0.7" />
+    <circle cx="82" cy="74" r="1.5" fill="#a855f7" opacity="0.6" />
+    <path d="M14 62 C10 44, 20 32, 28 38 C22 46, 24 60, 22 72 Z" fill="#2e1065" opacity="0.85" />
+    <path d="M86 62 C90 44, 80 32, 72 38 C78 46, 76 60, 78 72 Z" fill="#2e1065" opacity="0.85" />
+    <path d="M15 100 C18 72, 82 72, 85 100 Z" fill="#0f071d" />
+    <path d="M26 100 L34 76 L50 85 L66 76 L74 100" fill="#2e1065" />
+    <path d="M38 78 Q50 90 62 78" fill="none" stroke="#94a3b8" stroke-width="1.8" />
+    <circle cx="50" cy="88" r="3" fill="#e2e8f0" />
+    <circle cx="49" cy="87.5" r="0.7" fill="#0f071d" />
+    <circle cx="51" cy="87.5" r="0.7" fill="#0f071d" />
+    <rect x="43" y="62" width="14" height="15" fill="#cbd5e1" />
+    <path d="M31 34 C31 34, 30 64, 50 75 C70 64, 69 34, 69 34 Z" fill="#e2e8f0" />
+    <path d="M33 54 Q38 64 50 72 Q62 64 67 54 C61 61, 39 61, 33 54 Z" fill="#94a3b8" opacity="0.35" />
+    <path d="M25 36 C22 18, 36 14, 42 6 C47 16, 52 8, 58 4 C64 15, 74 10, 76 22 C82 16, 82 30, 75 40 C73 28, 67 24, 62 26 C57 18, 48 20, 44 24 C38 22, 32 26, 30 36 Z" fill="#090514" />
+    <path d="M32 30 C34 16, 44 14, 48 10 C50 18, 56 14, 60 8 C64 18, 70 16, 72 26 C68 20, 58 18, 54 22 C48 18, 40 20, 36 26 Z" fill="#6b21a8" />
+    <path d="M36 43 L47 41" stroke="#090514" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M64 43 L53 41" stroke="#090514" stroke-width="2.6" stroke-linecap="round" />
+    <ellipse cx="41" cy="48" rx="4.5" ry="3.5" fill="#ef4444" />
+    <ellipse cx="59" cy="48" rx="4.5" ry="3.5" fill="#ef4444" />
+    <circle cx="41" cy="48" r="2.2" fill="#facc15" />
+    <circle cx="59" cy="48" r="2.2" fill="#facc15" />
+    <circle cx="41" cy="48" r="1.1" fill="#090514" />
+    <circle cx="59" cy="48" r="1.1" fill="#090514" />
+    <circle cx="42.2" cy="47" r="0.8" fill="#ffffff" />
+    <circle cx="60.2" cy="47" r="0.8" fill="#ffffff" />
+    <path d="M50 47 L48.5 54 L51.5 54" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M37 60 Q50 71 63 60 C58 66, 42 66, 37 60 Z" fill="#090514" />
+    <polygon points="41,61 43,65 45,61" fill="#ffffff" />
+    <polygon points="46,62 48,66 50,62" fill="#ffffff" />
+    <polygon points="51,62 53,66 55,62" fill="#ffffff" />
+    <polygon points="56,61 58,65 60,61" fill="#ffffff" />
+    <path d="M35 59 Q50 72 65 59" fill="none" stroke="#7e22ce" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="81" cy="47" r="5" fill="#dc2626" />
+    <path d="M81 42 Q83 39 84 41" fill="none" stroke="#15803d" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="79.5" cy="45.5" r="1" fill="#fca5a5" />
+    <path d="M22 47 Q16 41 19 33 Q24 37 23 45 Z" fill="#e0e7ff" opacity="0.9" />
+    <line x1="22" y1="46" x2="25" y2="52" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round" />
+  `,
 };
 
 export const DEFAULT_ACTOR_AVATAR_SVG = `
