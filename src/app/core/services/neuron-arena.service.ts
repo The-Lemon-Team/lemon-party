@@ -1,9 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   Observable,
   catchError,
   combineLatest,
+  defer,
+  distinctUntilChanged,
   filter,
   map,
   of,
@@ -66,8 +69,9 @@ import {
 } from './neuron-arena.storage';
 import { cancelVoicePlayback, startVoicePlayback } from './neuron-arena.voice-player';
 import { ProfileService } from './profile.service';
+import { detectMentionedActors } from '../../components/neuron-arena/arena-ui.utils';
 
-const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v3';
+const STORAGE_NOTES_KEY = 'lemon-party:cloud-notes-v8';
 
 function loadStoredNotes(): Record<string, CloudDayNote[]> {
   if (typeof window !== 'undefined') {
@@ -76,7 +80,17 @@ function loadStoredNotes(): Record<string, CloudDayNote[]> {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
-          return parsed;
+          // Merge seed notes so new seeds are automatically loaded without requiring manual cache clear
+          const merged: Record<string, CloudDayNote[]> = { ...parsed };
+          for (const [date, seedNotes] of Object.entries(SEED_HERO_CLOUD_NOTES)) {
+            const existing = merged[date] || [];
+            const seedMap = new Map(seedNotes.map((n) => [n.id, n]));
+            const updated = existing.map((n) => seedMap.get(n.id) ?? n);
+            const existingIds = new Set(existing.map((n) => n.id));
+            const missing = seedNotes.filter((n) => !existingIds.has(n.id));
+            merged[date] = [...updated, ...missing];
+          }
+          return merged;
         }
       }
     } catch {}
@@ -96,14 +110,48 @@ function saveStoredNotes(store: Record<string, CloudDayNote[]>): void {
 export class NeuronArenaService {
   private readonly api = inject(ApiService);
   private readonly profileService = inject(ProfileService);
+  private readonly http = inject(HttpClient);
+
+  private loadPrivateNotesIfPresent(): void {
+    if (typeof window === 'undefined') return;
+    this.http
+      .get<Record<string, CloudDayNote[]>>('/hero-notes.private.json')
+      .pipe(catchError(() => of(null)))
+      .subscribe((privateNotes) => {
+        if (privateNotes && typeof privateNotes === 'object') {
+          const current = this.notesSubject.value;
+          const merged: Record<string, CloudDayNote[]> = { ...current };
+          for (const [date, notes] of Object.entries(privateNotes)) {
+            const existing = merged[date] || [];
+            const map = new Map(notes.map((n) => [n.id, n]));
+            const updated = existing.map((n) => map.get(n.id) ?? n);
+            const existingIds = new Set(existing.map((n) => n.id));
+            const missing = notes.filter((n) => !existingIds.has(n.id));
+            merged[date] = [...updated, ...missing];
+          }
+          this.notesSubject.next(merged);
+          saveStoredNotes(merged);
+        }
+      });
+  }
 
   private stateFlowId: string | null = null;
-  private readonly stateSubject = new BehaviorSubject<ArenaStateStore>(loadCachedArenaState(this.profileService.currentProfileId));
+  private loadedProfileId: string = this.profileService.currentProfileId;
+  private readonly stateSubject = new BehaviorSubject<ArenaStateStore>(loadCachedArenaState(this.loadedProfileId));
   private readonly speakingVoiceIdSubject = new BehaviorSubject<string | null>(null);
   private readonly selectedDesireCardIdSubject = new BehaviorSubject<string>('card-drink-beer');
 
-  private readonly notesSubject = new BehaviorSubject<Record<string, CloudDayNote[]>>(loadStoredNotes());
-  readonly notesMap$: Observable<Record<string, CloudDayNote[]>> = this.notesSubject.asObservable();
+  private _notesSubject: BehaviorSubject<Record<string, CloudDayNote[]>> | null = null;
+  private get notesSubject(): BehaviorSubject<Record<string, CloudDayNote[]>> {
+    if (!this._notesSubject) {
+      this._notesSubject = new BehaviorSubject<Record<string, CloudDayNote[]>>(loadStoredNotes());
+    }
+    return this._notesSubject;
+  }
+
+  readonly notesMap$: Observable<Record<string, CloudDayNote[]>> = defer(() =>
+    this.notesSubject.asObservable(),
+  );
 
   readonly allNotes$: Observable<CloudDayNote[]> = this.notesMap$.pipe(
     map((m) => Object.values(m).flat()),
@@ -184,16 +232,30 @@ export class NeuronArenaService {
   }
 
   constructor() {
-    this.profileService.activeProfileId$.subscribe((profileId) => {
-      this.stateSubject.next(loadCachedArenaState(this.profileService.currentProfileId));
-      this.hydrateFromBackend(profileId, false);
-    });
+    this.loadPrivateNotesIfPresent();
+    this.profileService.activeProfileId$
+      .pipe(distinctUntilChanged())
+      .subscribe((profileId) => {
+        if (profileId !== this.loadedProfileId) {
+          this.loadedProfileId = profileId;
+          this.stateSubject.next(loadCachedArenaState(profileId));
+        }
+        this.hydrateFromBackend(profileId, false);
+      });
   }
 
   selectLeadActor(actorId: string): void {
     const state = this.stateSubject.value;
     if (!state.actors.some((a) => a.id === actorId)) return;
     this.commitState({ ...state, leadActorId: actorId });
+  }
+
+  getActor(actorId: string): ArenaActorCard | undefined {
+    return this.stateSubject.value.actors.find((a) => a.id === actorId);
+  }
+
+  getActors(): ArenaActorCard[] {
+    return this.stateSubject.value.actors;
   }
 
   inspectDesireCard(cardId: string): void {
@@ -647,15 +709,22 @@ export class NeuronArenaService {
 
   /** Текущий статус модерации: Хост-Администратор / GM (Мастер Арены) */
   readonly isAdminMode = signal<boolean>(true);
+  private readonly heroNotesCache = new Map<string, Observable<CloudDayNote[]>>();
 
   getHeroNotes(actorId: string): Observable<CloudDayNote[]> {
-    return combineLatest([this.allNotes$, this.profileService.activeProfileId$]).pipe(
+    const cached = this.heroNotesCache.get(actorId);
+    if (cached) {
+      return cached;
+    }
+    const stream$ = combineLatest([this.allNotes$, this.profileService.activeProfileId$]).pipe(
       map(([notes, activeProfileId]) => {
         const isAdmin = this.isAdminMode();
         return notes
           .filter(
             (n) =>
-              n.actorId === actorId &&
+              (n.actorId === actorId ||
+                n.subActorId === actorId ||
+                (n.partyActorIds?.includes(actorId) ?? false)) &&
               (n.visibility === 'PUBLIC' ||
                 !n.visibility ||
                 n.authorProfileId === activeProfileId ||
@@ -665,11 +734,13 @@ export class NeuronArenaService {
             if (Boolean(a.isPinnedToHero) !== Boolean(b.isPinnedToHero)) {
               return a.isPinnedToHero ? -1 : 1;
             }
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            return b.createdAt.localeCompare(a.createdAt);
           });
       }),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
+    this.heroNotesCache.set(actorId, stream$);
+    return stream$;
   }
 
   getPinnedHeroNotes(actorId: string): Observable<CloudDayNote[]> {
@@ -688,8 +759,14 @@ export class NeuronArenaService {
     isPinnedToHero?: boolean;
     isPinnedToCloud?: boolean;
     tags?: string[];
+    partyActorIds?: string[];
+    subActorId?: string;
+    replyToNoteId?: string;
+    replyToAuthorName?: string;
+    replyToTextSnippet?: string;
   }): CloudDayNote {
-    const actor = this.stateSubject.value.actors.find((a) => a.id === input.actorId);
+    const allActors = this.stateSubject.value.actors;
+    const actor = allActors.find((a) => a.id === input.actorId);
     const today = new Date().toISOString().split('T')[0];
     const nowIso = new Date().toISOString();
     const nowTime = nowIso.substring(11, 16);
@@ -698,6 +775,32 @@ export class NeuronArenaService {
 
     const currentProfile = this.profileService.currentProfileId;
     const authorName = 'Вы (' + currentProfile.substring(0, 5) + ')';
+
+    // Auto-detect party actors mentioned in text and merge with explicitly selected party actors
+    const detected = detectMentionedActors(input.text, allActors, input.actorId);
+    
+    // Resolve sub-character (either explicitly specified or first detected from text)
+    const explicitSubActor = input.subActorId ? allActors.find((a) => a.id === input.subActorId) : undefined;
+    const subActor = explicitSubActor || (detected.length > 0 ? detected[0] : undefined);
+
+    const initialPartyIds = [...(input.partyActorIds || []), ...detected.map((a) => a.id)];
+    if (subActor && !initialPartyIds.includes(subActor.id)) {
+      initialPartyIds.push(subActor.id);
+    }
+    const combinedPartyIds = Array.from(new Set(initialPartyIds));
+
+    const partyActors = allActors.filter((a) => combinedPartyIds.includes(a.id));
+    const partyActorNames = partyActors.map((a) => a.name);
+
+    // Random slight tilt and delay for organic floating animation
+    const tilts = [-1.4, -0.9, 0, 0.8, 1.2, 1.5];
+    const randomTilt = tilts[Math.floor(Math.random() * tilts.length)];
+    const randomDelay = Math.round(Math.random() * 20) / 10; // 0..2.0s
+
+    const initialSupporters = [input.actorId];
+    if (subActor && !initialSupporters.includes(subActor.id)) {
+      initialSupporters.push(subActor.id);
+    }
 
     const newNote: CloudDayNote = {
       id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -710,17 +813,34 @@ export class NeuronArenaService {
       actorAvatar: actor?.avatarIcon || 'person',
       actorAccent: actor?.accentColor || 'amber',
       actorTitle: actor?.title || '',
+      subActorId: subActor?.id,
+      subActorName: subActor?.name,
+      subActorAvatar: subActor?.avatarIcon,
+      subActorAccent: subActor?.accentColor,
+      replyToNoteId: input.replyToNoteId,
+      replyToAuthorName: input.replyToAuthorName,
+      replyToTextSnippet: input.replyToTextSnippet,
       title: input.title?.trim() || undefined,
       text: input.text.trim(),
       tags: input.tags || [],
-      supporters: [],
-      votesCount: 0,
+      supporters: initialSupporters,
+      votesCount: initialSupporters.length,
       createdAt: nowIso,
       authorProfileId: currentProfile,
       authorProfileName: authorName,
       visibility: input.visibility || 'PUBLIC',
       isPinnedToHero: Boolean(input.isPinnedToHero),
       isPinnedToCloud: Boolean(input.isPinnedToCloud),
+      partyActorIds: combinedPartyIds,
+      partyActorNames,
+      likedByActors: partyActors.map((pa) => ({
+        actorId: pa.id,
+        actorName: pa.name,
+        avatarIcon: pa.avatarIcon,
+        moodEmoji: '🤝',
+      })),
+      floatingTilt: randomTilt,
+      floatingDelay: randomDelay,
     };
 
     const currentMap = { ...this.notesSubject.value };
@@ -859,6 +979,77 @@ export class NeuronArenaService {
         saveStoredNotes(currentMap);
         break;
       }
+    }
+  }
+
+  toggleNoteLike(noteId: string, actorId?: string): void {
+    const currentMap = { ...this.notesSubject.value };
+    const allActors = this.stateSubject.value.actors;
+    const targetActorId = actorId || this.stateSubject.value.leadActorId || allActors[0]?.id;
+    const actor = allActors.find((a) => a.id === targetActorId) ?? allActors[0];
+    if (!actor) return;
+
+    for (const dateKey of Object.keys(currentMap)) {
+      const idx = currentMap[dateKey].findIndex((n) => n.id === noteId);
+      if (idx !== -1) {
+        const note = currentMap[dateKey][idx];
+        const existingLikes = note.likedByActors ? [...note.likedByActors] : [];
+        const hasLikedIndex = existingLikes.findIndex((l) => l.actorId === actor.id);
+
+        let updatedLikes: typeof existingLikes;
+        if (hasLikedIndex !== -1) {
+          updatedLikes = existingLikes.filter((_, i) => i !== hasLikedIndex);
+        } else {
+          updatedLikes = [
+            ...existingLikes,
+            {
+              actorId: actor.id,
+              actorName: actor.name,
+              avatarIcon: actor.avatarIcon,
+              moodEmoji: '❤️',
+              accentColor: actor.accentColor,
+            },
+          ];
+        }
+
+        currentMap[dateKey] = [
+          ...currentMap[dateKey].slice(0, idx),
+          {
+            ...note,
+            likedByActors: updatedLikes,
+            votesCount: updatedLikes.length,
+          },
+          ...currentMap[dateKey].slice(idx + 1),
+        ];
+        this.notesSubject.next(currentMap);
+        saveStoredNotes(currentMap);
+        break;
+      }
+    }
+  }
+
+  addCloudNote(note: CloudDayNote): CloudDayNote {
+    const currentMap = { ...this.notesSubject.value };
+    const dateKey = note.dateKey || '2026-11-06';
+    const list = currentMap[dateKey] ? [...currentMap[dateKey], note] : [note];
+    currentMap[dateKey] = list;
+    this.notesSubject.next(currentMap);
+    saveStoredNotes(currentMap);
+    return note;
+  }
+
+  clearNotesForDate(dateKey: string): void {
+    const currentMap = { ...this.notesSubject.value };
+    currentMap[dateKey] = [];
+    this.notesSubject.next(currentMap);
+    saveStoredNotes(currentMap);
+  }
+
+  clearTodayNotes(): void {
+    this.clearNotesForDate('2026-11-06');
+    const nowKey = new Date().toISOString().split('T')[0];
+    if (nowKey !== '2026-11-06') {
+      this.clearNotesForDate(nowKey);
     }
   }
 

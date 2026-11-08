@@ -5,7 +5,7 @@ import {
 } from '../models/flow.models';
 import { ArenaStateStore, createEmptyArenaStore } from './neuron-arena.helpers';
 
-const STORAGE_KEY_PREFIX = 'lemon-actions:neuron-arena:v5:';
+const STORAGE_KEY_PREFIX = 'lemon-actions:neuron-arena:v6:';
 
 export const arenaStorageKey = (profileId: string): string => `${STORAGE_KEY_PREFIX}${profileId}`;
 
@@ -15,6 +15,17 @@ export function loadCachedArenaState(profileId: string): ArenaStateStore {
     if (raw) {
       const parsed = JSON.parse(raw) as ArenaStateStore;
       if (parsed && Array.isArray(parsed.actors) && parsed.actors.length > 0) {
+        const initial = createEmptyArenaStore();
+        const existingCardIds = new Set((parsed.desireCards || []).map((c) => c.id));
+        const missingCards = initial.desireCards.filter((c) => !existingCardIds.has(c.id));
+        if (missingCards.length > 0) {
+          parsed.desireCards = [...(parsed.desireCards || []), ...missingCards];
+        }
+        const existingActorIds = new Set((parsed.actors || []).map((a) => a.id));
+        const missingActors = initial.actors.filter((a) => !existingActorIds.has(a.id));
+        if (missingActors.length > 0) {
+          parsed.actors = [...(parsed.actors || []), ...missingActors];
+        }
         return parsed;
       }
     }
