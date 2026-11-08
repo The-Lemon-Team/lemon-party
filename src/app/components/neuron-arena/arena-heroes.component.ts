@@ -75,7 +75,7 @@ type HeroSortOption = 'NAME' | 'CHARISMA' | 'ANALYTICAL' | 'REBEL' | 'VOICES';
             <div>
               <div class="flex items-center gap-2 flex-wrap">
                 <h1 class="font-headline-sm text-lg font-bold text-on-surface">
-                  Ростер Персонажей · 30 Мультяшных Героев
+                  Ростер Персонажей · Коллекция Героев
                 </h1>
                 <span
                   class="font-label-code-sm text-[11px] px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-semibold"
@@ -188,6 +188,15 @@ type HeroSortOption = 'NAME' | 'CHARISMA' | 'ANALYTICAL' | 'REBEL' | 'VOICES';
 
             <div class="flex flex-col gap-2 flex-shrink-0">
               <div class="flex items-center gap-2">
+                <a
+                  [routerLink]="['/party/cloud']"
+                  [queryParams]="{ workspace: lead.id }"
+                  class="px-3.5 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-ui text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-xs"
+                  title="Открыть персональный Workspace ведущего героя в Хроно-Облаке"
+                >
+                  <span class="material-symbols-rounded text-base text-primary">cloud</span>
+                  <span>Workspace героя</span>
+                </a>
                 <button
                   type="button"
                   (click)="arena.previewActorVoice(lead)"
@@ -437,11 +446,21 @@ type HeroSortOption = 'NAME' | 'CHARISMA' | 'ANALYTICAL' | 'REBEL' | 'VOICES';
               </div>
 
               <!-- CARD ACTIONS -->
-              <div class="flex items-center justify-between gap-2 pt-1">
+              <div class="flex items-center justify-between gap-1.5 pt-1 flex-wrap">
+                <a
+                  [routerLink]="['/party/cloud']"
+                  [queryParams]="{ workspace: actor.id }"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-ui text-xs font-semibold transition-all"
+                  title="Открыть персональный Workspace героя в Хроно-Облаке"
+                >
+                  <span class="material-symbols-rounded text-sm text-primary">cloud</span>
+                  <span>Workspace</span>
+                </a>
+
                 <button
                   type="button"
                   (click)="arena.previewActorVoice(actor)"
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-ui text-xs font-semibold transition-all"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-ui text-xs font-semibold transition-all"
                   title="Озвучить цитату персонажа"
                 >
                   <span class="material-symbols-rounded text-sm text-primary">volume_up</span>

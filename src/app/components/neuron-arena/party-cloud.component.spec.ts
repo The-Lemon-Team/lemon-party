@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { CloudDayNote } from '../../core/models/flow.models';
 import { NeuronArenaService } from '../../core/services/neuron-arena.service';
 import { PartyRealtimeService } from '../../core/services/party-realtime.service';
 import { PartyCloudComponent } from './party-cloud.component';
@@ -12,6 +13,7 @@ describe('PartyCloudComponent', () => {
   let realtime: PartyRealtimeService;
 
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [PartyCloudComponent],
       providers: [
@@ -25,6 +27,7 @@ describe('PartyCloudComponent', () => {
     component = fixture.componentInstance;
     arena = TestBed.inject(NeuronArenaService);
     realtime = TestBed.inject(PartyRealtimeService);
+    fixture.detectChanges();
   });
 
   it('should create the party cloud component', () => {
@@ -107,13 +110,15 @@ describe('PartyCloudComponent', () => {
 
   it('should vote for note and increment vote count and supporters', () => {
     spyOn(realtime, 'broadcastEvent');
-    const note = component.activeDateNotes()[0];
-    const votesBefore = note.votesCount;
+    const note =
+      component.activeDateNotes().find((n) => !component.hasActorLiked(n)) ??
+      component.activeDateNotes()[0];
+    const likesBefore = component.getResolvedLikes(note).length;
 
     component.voteForNote(note.id);
 
     const updated = component.activeDateNotes().find((n) => n.id === note.id);
-    expect(updated?.votesCount).toBe(votesBefore + 1);
+    expect(component.getResolvedLikes(updated!).length).toBe(likesBefore + 1);
     expect(realtime.broadcastEvent).toHaveBeenCalledWith(
       jasmine.objectContaining({
         type: 'VOTE_CAST',
@@ -329,5 +334,224 @@ describe('PartyCloudComponent', () => {
     // Prev note in modal (back to first)
     component.prevInspectedClusterNote(foundCluster!);
     expect(component.inspectedNote()?.id).toBe(cluster.notes[0].id);
+  });
+
+  it('should filter cloud timeline notes by selected actor filter', () => {
+    component.selectDate('2026-11-06');
+    const allNotes = component.activeDateNotes();
+    expect(allNotes.length).toBeGreaterThan(0);
+    const targetActorId = allNotes[0].actorId;
+
+    component.selectActorFilter(targetActorId);
+    expect(component.selectedActorFilter()).toBe(targetActorId);
+    expect(component.visibleNotes().length).toBeGreaterThan(0);
+    for (const note of component.visibleNotes()) {
+      const isParticipant =
+        note.actorId === targetActorId ||
+        note.subActorId === targetActorId ||
+        (note.partyActorIds?.includes(targetActorId) ?? false);
+      expect(isParticipant).toBeTrue();
+    }
+
+    // Reset filter
+    component.selectActorFilter(null);
+    expect(component.selectedActorFilter()).toBeNull();
+    expect(component.visibleNotes().length).toBe(allNotes.length);
+  });
+
+  it('should open character workspace modal via openCharacterWorkspace and openWorkspaceFromInspectedNote', () => {
+    let actors: any[] = [];
+    arena.actors$.subscribe((a) => (actors = a)).unsubscribe();
+    if (actors.length > 0) {
+      component.allActors.set(actors);
+      expect(component.selectedActorForWorkspace()).toBeNull();
+
+      component.openCharacterWorkspace(actors[0]);
+      expect(component.selectedActorForWorkspace()?.id).toBe(actors[0].id);
+
+      // From inspected note
+      component.inspectNote({ ...component.activeDateNotes()[0], actorId: actors[0].id });
+      component.openWorkspaceFromInspectedNote();
+      expect(component.selectedActorForWorkspace()?.id).toBe(actors[0].id);
+      expect(component.inspectedNote()).toBeNull();
+    }
+  });
+
+  it('should return actor notes count for the active date', () => {
+    component.selectDate('2026-11-06');
+    const firstNote = component.activeDateNotes()[0];
+    const count = component.getActorNotesCountForDate(firstNote.actorId);
+    expect(count).toBeGreaterThanOrEqual(1);
+    expect(component.getActorNotesCountForDate('non-existing-actor')).toBe(0);
+  });
+
+  it('should format personalized likes: show first 3 visible characters and collapse remainder into + 3 лайка with hover tooltip', () => {
+    const sampleNote: CloudDayNote = {
+      id: 'test-personalized-likes',
+      dateKey: '2026-11-06',
+      time: '20:45',
+      timeMinutes: 1245,
+      type: 'action',
+      actorId: 'actor-hades',
+      actorName: 'Аид',
+      actorAvatar: 'hades',
+      actorAccent: 'cyan',
+      text: 'Адский огонь под казаном',
+      supporters: ['actor-neurobi', 'actor-alexey', 'actor-zeus', 'actor-poseidon', 'actor-baron'],
+      votesCount: 6,
+      createdAt: '2026-11-06T20:45:00Z',
+      likedByActors: [
+        { actorId: 'actor-hades', actorName: 'Аид', avatarIcon: 'hades' },
+        { actorId: 'actor-neurobi', actorName: 'Нейроби', avatarIcon: 'neurobi' },
+        { actorId: 'actor-alexey', actorName: 'Алексей', avatarIcon: 'alexey' },
+        { actorId: 'actor-zeus', actorName: 'Зевс', avatarIcon: 'zeus' },
+        { actorId: 'actor-poseidon', actorName: 'Посейдон', avatarIcon: 'poseidon' },
+        { actorId: 'actor-baron', actorName: 'Барон', avatarIcon: 'baron' },
+      ],
+    };
+
+    const visibleLikes = component.getVisibleLikes(sampleNote);
+    expect(visibleLikes.length).toBe(3);
+    expect(visibleLikes.map((l) => l.actorName)).toEqual(['Аид', 'Нейроби', 'Алексей']);
+
+    const hiddenLikes = component.getHiddenLikes(sampleNote);
+    expect(hiddenLikes.length).toBe(3);
+    expect(hiddenLikes.map((l) => l.actorName)).toEqual(['Зевс', 'Посейдон', 'Барон']);
+
+    const likesWord = component.getLikesWord(hiddenLikes.length);
+    expect(likesWord).toBe('лайка');
+
+    const tooltip = component.getHiddenLikesTooltip(sampleNote);
+    expect(tooltip).toBe('Оценили: Зевс, Посейдон, Барон');
+  });
+
+  it('should toggle like on and off for the active character in voteForNote', () => {
+    let note = component.activeDateNotes()[0];
+    const actor = component.activePitchActor();
+    if (actor) {
+      if (component.hasActorLiked(note)) {
+        component.voteForNote(note.id);
+        note = component.activeDateNotes().find((n) => n.id === note.id)!;
+      }
+      expect(component.hasActorLiked(note)).toBeFalse();
+
+      // First vote: adds like
+      component.voteForNote(note.id);
+      note = component.activeDateNotes().find((n) => n.id === note.id)!;
+      expect(component.hasActorLiked(note)).toBeTrue();
+
+      // Second vote: toggles like off
+      component.voteForNote(note.id);
+      note = component.activeDateNotes().find((n) => n.id === note.id)!;
+      expect(component.hasActorLiked(note)).toBeFalse();
+    }
+  });
+
+  it('should support sub-character and show message in author feed, sub-character feed, and main feed', () => {
+    const alexey = component.allActors().find((a) => a.id === 'actor-alexey') || component.allActors()[0];
+    const hades = component.allActors().find((a) => a.id === 'actor-hades');
+    expect(hades).toBeDefined();
+
+    component.activePitchActor.set(alexey);
+    component.setSubActor(hades!);
+    expect(component.activeSubActor()?.id).toBe('actor-hades');
+
+    component.newIdeaTitle.set('Совместная тренировка на Арене');
+    component.submitNoteOrIdea();
+
+    // 1. Should be in Main Feed (no actor filter)
+    component.selectActorFilter(null);
+    const mainFeedNotes = component.visibleNotes();
+    const createdNoteInMain = mainFeedNotes.find((n) => n.text === 'Совместная тренировка на Арене');
+    expect(createdNoteInMain).toBeDefined();
+    expect(createdNoteInMain?.actorId).toBe(alexey.id);
+    expect(createdNoteInMain?.subActorId).toBe('actor-hades');
+    expect(createdNoteInMain?.subActorName).toBe(hades!.name);
+
+    // 2. Should be in Author Feed (Alexey)
+    component.selectActorFilter(alexey.id);
+    const authorFeedNotes = component.visibleNotes();
+    const createdNoteInAuthor = authorFeedNotes.find((n) => n.text === 'Совместная тренировка на Арене');
+    expect(createdNoteInAuthor).toBeDefined();
+
+    // 3. Should be in Sub-character Feed (Hades)
+    component.selectActorFilter('actor-hades');
+    const subFeedNotes = component.visibleNotes();
+    const createdNoteInSub = subFeedNotes.find((n) => n.text === 'Совместная тренировка на Арене');
+    expect(createdNoteInSub).toBeDefined();
+
+    // 4. Note count map should count for both characters
+    const countMap = component.actorNotesCountMap();
+    expect(countMap[alexey.id]).toBeGreaterThan(0);
+    expect(countMap['actor-hades']).toBeGreaterThan(0);
+  });
+
+  it('should auto-detect sub-character from "здесь участвую я и аид" and show in both feeds and main feed', () => {
+    const alexey = component.allActors().find((a) => a.id === 'actor-alexey') || component.allActors()[0];
+    component.activePitchActor.set(alexey);
+    component.activeSubActor.set(null);
+
+    component.newIdeaTitle.set('здесь участвую я и аид на кулинарном поединке');
+    component.submitNoteOrIdea();
+
+    // Main Feed
+    component.selectActorFilter(null);
+    const noteInMain = component.visibleNotes().find((n) => n.text.includes('здесь участвую я и аид'));
+    expect(noteInMain).toBeDefined();
+    expect(noteInMain?.subActorId).toBe('actor-hades');
+
+    // Alexey feed
+    component.selectActorFilter(alexey.id);
+    expect(component.visibleNotes().some((n) => n.text.includes('здесь участвую я и аид'))).toBeTrue();
+
+    // Hades feed
+    component.selectActorFilter('actor-hades');
+    expect(component.visibleNotes().some((n) => n.text.includes('здесь участвую я и аид'))).toBeTrue();
+  });
+
+  it('should verify seeded Zeus note and Hades reply', () => {
+    const notes = component.activeDateNotes();
+    const zeusNote = notes.find((n) => n.id === 'note-today-zeus-thunder-challenge');
+    expect(zeusNote).toBeDefined();
+    expect(zeusNote?.actorId).toBe('actor-zeus');
+
+    const hadesReply = notes.find((n) => n.id === 'note-today-hades-infernal-soup-reply');
+    expect(hadesReply).toBeDefined();
+    expect(hadesReply?.actorId).toBe('actor-hades');
+    expect(hadesReply?.replyToNoteId).toBe(zeusNote?.id);
+    expect(hadesReply?.replyToAuthorName).toBe('Зевс');
+
+    // getRepliesForNote
+    const zeusReplies = component.getRepliesForNote(zeusNote!.id);
+    expect(zeusReplies.some((r) => r.id === hadesReply!.id)).toBeTrue();
+
+    // jumpToRepliedNote
+    component.jumpToRepliedNote(hadesReply!.replyToNoteId);
+    expect(component.inspectedNote()?.id).toBe(zeusNote!.id);
+    expect(component.inspectedNote()?.actorName).toBe('Зевс');
+  });
+
+  it('should support starting and submitting a reply to a note', () => {
+    const alexey = component.allActors().find((a) => a.id === 'actor-alexey') || component.allActors()[0];
+    const notes = component.activeDateNotes();
+    const targetNote = notes[0];
+
+    component.activePitchActor.set(alexey);
+    component.startReply(targetNote);
+    expect(component.replyingToNote()).toEqual(targetNote);
+    expect(component.inputPlaceholder()).toContain(`в ответ для ${targetNote.actorName}`);
+
+    component.newIdeaTitle.set('Отличная мысль, полностью поддерживаю!');
+    component.submitNoteOrIdea();
+
+    expect(component.replyingToNote()).toBeNull();
+    const createdReply = component.activeDateNotes().find((n) => n.text === 'Отличная мысль, полностью поддерживаю!');
+    expect(createdReply).toBeDefined();
+    expect(createdReply?.replyToNoteId).toBe(targetNote.id);
+    expect(createdReply?.replyToAuthorName).toBe(targetNote.actorName);
+    expect(createdReply?.replyToTextSnippet).toBeDefined();
+
+    const repliesList = component.getRepliesForNote(targetNote.id);
+    expect(repliesList.some((r) => r.id === createdReply!.id)).toBeTrue();
   });
 });
